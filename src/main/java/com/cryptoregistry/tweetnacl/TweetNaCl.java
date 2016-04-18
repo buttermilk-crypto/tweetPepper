@@ -1,4 +1,4 @@
-package org.peergos.crypto;
+package com.cryptoregistry.tweetnacl;
 
 import java.security.*;
 import java.util.Arrays;

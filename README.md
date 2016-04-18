@@ -1,6 +1,7 @@
-# tweetnacl-java
-A Java port of TweetNaCl from the original C. 
+# buttermilk tweetnacl-java
 
-It has been extensively tested against the original C version and TweetNaCl.js for messages up to 2^24 bytes. It still needs a professional cryptographic audit. 
+This was forked from https://github.com/ianopolous/tweetnacl-java/
 
-To import into your project you only need [org/peergos/crypto/TweetNaCl.java](https://github.com/ianopolous/tweetnacl-java/raw/master/src/org/peergos/crypto/TweetNaCl.java).
+* Mavenized
+* Formatted to please my eyes  
+* Transformed most of the static methods into instance methods

@@ -1382,6 +1382,12 @@ public class TweetNaCl {
 		System.arraycopy(r, 0, b, 0, len);
 	}
 	
+	public byte [] gen_rand(int len){
+		byte[] r = new byte[len];
+		prng.nextBytes(r);
+		return r;
+	}
+	
 	public static class InvalidSignatureException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 	}

@@ -26,7 +26,8 @@ public class JSONTest {
     	BoxingKeyContents key0 = TweetPepper.generateBoxingKeys();
     	SigningKeyContents key1 = TweetPepper.generateSigningKeys();
     	KMU confidential = new KMU("dave@cryptoregistry.com");
-    	
+    	confidential.addBlock(key0.toBlock());
+    	confidential.addBlock(key1.toBlock());
     	
     	Block contactInfo = new Block(BlockType.C);
     	 contactInfo.put("contactType","Person");

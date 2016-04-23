@@ -23,7 +23,7 @@ public class TweetKeyMetadata {
 	}
 	
 	public static TweetKeyMetadata createMetadata(BlockType t){
-		return new TweetKeyMetadata(UUID.randomUUID().toString(),t,new Date());
+		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date());
 	}
 
 }

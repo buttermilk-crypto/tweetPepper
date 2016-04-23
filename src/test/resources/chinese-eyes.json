@@ -29,14 +29,8 @@
          "SignatureAlgorithm":"TweetNaCl",
          "DigestAlgorithm":"SHA-224",
          "v":"XmouiCmxeN06RkL5LECKHAGdmNqFeXkrwaCCyF0OXg8=",
-         "r":"u315Zg5qlYTvWW32atg3B0Ir4a5jeJlNBffXTyMck7U=",
-         "DataRefs": [
-         	"2be06bce-147d-413f-b59a-d052917bc39c:SignedBy, .SignedWith, ",
-         	"496d00c4-bbe4-467c-9f76-461f7c9589c6:Handle, .CreatedOn, .KeyAlgorithm,",
-         	".P, d35da09a-6195-4c3d-a37a-8da5cbc26be9:contactType, .GivenName.0,",
-         	".FamilyName.0, .Email.0, .MobilePhone.0, .Country, a06fc9cd-bcd6-45cc-b580-15ce5380a061:Copyright,",
-         	".TermsOfServiceAgreement, .InfoAffirmation"
-         ]
+         "DataRefs":
+           "2be06bce-147d-413f-b59a-d052917bc39c:SignedBy, .SignedWith, 496d00c4-bbe4-467c-9f76-461f7c9589c6:Handle, .CreatedOn, .KeyAlgorithm, .P, d35da09a-6195-4c3d-a37a-8da5cbc26be9:contactType, .GivenName.0, .FamilyName.0, .Email.0, .MobilePhone.0, .Country, a06fc9cd-bcd6-45cc-b580-15ce5380a061:Copyright, .TermsOfServiceAgreement, .InfoAffirmation"
       }
    }
 }

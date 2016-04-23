@@ -35,7 +35,7 @@ public class Key {
 		return bytes;
 	}
 	
-	public String getEncoding() {
+	public String getEncoded() {
 		if(!alive) throw new DeadKeyException();
 		return Base64.getUrlEncoder().encodeToString(bytes);
 		

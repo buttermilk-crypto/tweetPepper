@@ -19,10 +19,8 @@ import java.util.UUID;
  * 
  * @author Dave
  *
- * @param <K>
- * @param <V>
  */
-public class Block<K,V> extends LinkedHashMap<K, V> {
+public class Block extends LinkedHashMap<String,String> {
 
 	private static final long serialVersionUID = 1L;
 	

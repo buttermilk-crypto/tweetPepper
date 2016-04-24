@@ -16,5 +16,10 @@ public class BoxingKeyContents extends BoxingKeyForPublication {
          b.put("S", this.privateBoxingKey.getEncoded());
          return b;
 	}
+	
+	public Block pubBlock() {
+		 Block b = super.toBlock();
+        return b;
+	}
 
 }

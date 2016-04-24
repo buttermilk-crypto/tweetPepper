@@ -3,6 +3,7 @@ package com.cryptoregistry.tweet.pepper;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import com.cryptoregistry.tweet.pbe.PBEParams;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.PrivateKey;
 import com.cryptoregistry.tweet.pepper.key.PublicKey;
@@ -69,6 +70,12 @@ public final class TweetPepper {
 		return new SecretBoxKeyContents(TweetKeyMetadata.createMetadata(BlockType.U), key);
 	}
 	
-	
+	public static final PBEParams createPBEParams(){
+		byte [] scryptSalt = new byte [16];
+		rand.nextBytes(scryptSalt);
+		byte [] secretBoxNonce = new byte [TweetNaCl.BOX_NONCE_BYTES];
+		rand.nextBytes(secretBoxNonce);
+		return new PBEParams(scryptSalt,secretBoxNonce);
+	}
 
 }

@@ -5,6 +5,8 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <dependencies>
+  
+  <!--  this is used for the scrypt implementation  -->
   <dependency>
     <groupId>com.lambdaworks</groupId>
     <artifactId>scrypt</artifactId>

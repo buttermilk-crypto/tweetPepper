@@ -1,13 +1,22 @@
 package com.cryptoregistry.tweet;
 
+import static com.lambdaworks.codec.Base64.decode;
+
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.cryptoregistry.tweet.pbe.PBE;
+import com.cryptoregistry.tweet.pbe.PBEParams;
+import com.cryptoregistry.tweet.pepper.TweetPepper;
+import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.salt.TweetNaCl;
 import com.cryptoregistry.tweet.salt.TweetNaCl.InvalidSignatureException;
+import com.lambdaworks.crypto.SCrypt;
 
 public class TestIdeas {
 
@@ -79,10 +88,63 @@ public class TestIdeas {
 		
 		// message bytes
 		byte [] msg = "Hello Tweet Salt".getBytes(StandardCharsets.UTF_8);
-		byte [] key = new byte[TweetNaCl.BOX_SECRET_KEY_BYTES];
+		byte [] key = salt.gen_rand(TweetNaCl.BOX_SECRET_KEY_BYTES);
 		byte [] nonce = salt.gen_rand(TweetNaCl.BOX_NONCE_BYTES);
 		
 		byte [] result = salt.secretbox(msg, nonce, key);
 		
 	}
+	
+	@Test
+	public void testScrypt() throws Exception{
+		    
+		TweetNaCl salt = new TweetNaCl();
+		
+		// key derivation input
+		String passwd = "password1";
+		
+		// we'll need to reserve this
+		byte[] scryptsalt = new byte[16];
+        SecureRandom.getInstanceStrong().nextBytes(scryptsalt);																	
+        byte[] derived = SCrypt.scrypt(passwd.getBytes(StandardCharsets.UTF_8), scryptsalt, 16384, 256, 1, 32); //uses about 60Gb of ram
+		
+        // validate this key will match the expected size for secret box
+		Assert.assertEquals(derived.length, TweetNaCl.BOX_SECRET_KEY_BYTES);
+		
+		byte [] nonce = salt.gen_rand(TweetNaCl.BOX_NONCE_BYTES);
+		byte [] msg = "Hello Tweet Salt".getBytes(StandardCharsets.UTF_8);
+		byte [] result = salt.secretbox(msg, nonce, derived);
+		
+		Assert.assertTrue(Arrays.equals(msg, salt.secretbox_open(result, nonce, derived)));
+		
+	}
+	
+	@Test
+	public void predicateGeneration() {
+		
+		PBEParams params = TweetPepper.createPBEParams();
+		Assert.assertTrue(params.N == 16384);
+		Assert.assertTrue(params.r == 256);
+		Assert.assertTrue(params.p == 1);
+	}
+	
+	
+	@Test
+	public void testProtect() {
+		
+		// key derivation input
+		String passwd = "password1";
+		PBEParams params = TweetPepper.createPBEParams();
+		
+		BoxingKeyContents contents = TweetPepper.generateBoxingKeys();
+		PBE pbe0 = new PBE(params);
+		String X = pbe0.protect(passwd.toCharArray(), contents.privateBoxingKey.getBytes());
+		System.err.println(X);
+		
+		PBE pbe1 = new PBE();
+		byte [] confidential = pbe1.unprotect(passwd.toCharArray(), X);
+		
+		Assert.assertTrue(Arrays.equals(contents.privateBoxingKey.getBytes(),confidential));
+	}
+	
 }

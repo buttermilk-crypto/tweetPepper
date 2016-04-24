@@ -16,5 +16,10 @@ public class SigningKeyContents extends SigningKeyForPublication {
          b.put("S", this.privateSigningKey.getEncoded());
          return b;
 	}
+	
+	public Block pubBlock() {
+		 Block b = super.toBlock();
+       return b;
+	}
 
 }

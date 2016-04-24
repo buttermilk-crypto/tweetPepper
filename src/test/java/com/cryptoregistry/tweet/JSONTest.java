@@ -30,6 +30,8 @@ public class JSONTest {
     	KMU confidential = new KMU("dave@cryptoregistry.com");
     	confidential.addBlock(key0.toBlock());
     	confidential.addBlock(key1.toBlock());
+    	char [] pass = {'p','a','s','s'};
+    	confidential.protectKeyBlocks(pass);
     	KMUWriter kmuw = new KMUWriter(confidential);
     	StringWriter keys = new StringWriter();
     	kmuw.emitKeys(keys);

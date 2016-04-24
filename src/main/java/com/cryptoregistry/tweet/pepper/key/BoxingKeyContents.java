@@ -14,6 +14,7 @@ public class BoxingKeyContents extends BoxingKeyForPublication {
 	public Block toBlock() {
 		 Block b = super.toBlock();
          b.put("S", this.privateBoxingKey.getEncoded());
+         b.name = b.name.substring(0,b.name.length()-2)+"-U";
          return b;
 	}
 	

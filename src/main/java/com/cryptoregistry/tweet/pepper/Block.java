@@ -24,11 +24,16 @@ public class Block extends LinkedHashMap<String,String> {
 
 	private static final long serialVersionUID = 1L;
 	
-	public final String name;
+	public String name;
 
 	public Block(BlockType type) {
 		super();
 		name = UUID.randomUUID().toString()+"-"+type.toString();
+	}
+	
+	public Block(String uuid, BlockType type) {
+		super();
+		name = uuid+"-"+type.toString();
 	}
 	
 	public BlockType getBlockType() {

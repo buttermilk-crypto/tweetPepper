@@ -66,16 +66,17 @@ public class KMUWriter {
 		Iterator<String> iter = kmu.map.keySet().iterator();
 		while(iter.hasNext()){
 			String key = iter.next(); // distinguished name
-			if(!key.endsWith("-U")) continue;
-			Block map = kmu.map.get(key);
-			JsonObject obj = new JsonObject();
-			Iterator<String> biter = map.keySet().iterator();
-			while(biter.hasNext()){
-				String itemKey = biter.next();
-				String itemValue = map.get(itemKey);
-				obj.add(itemKey, itemValue);
+			if(key.endsWith("-U")||key.endsWith("-X")){ 
+				Block map = kmu.map.get(key);
+				JsonObject obj = new JsonObject();
+				Iterator<String> biter = map.keySet().iterator();
+				while(biter.hasNext()){
+					String itemKey = biter.next();
+					String itemValue = map.get(itemKey);
+					obj.add(itemKey, itemValue);
+				}
+				contents.add(key, obj);
 			}
-			contents.add(key, obj);
 		}
 		
 		String output = Json.object()

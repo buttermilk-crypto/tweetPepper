@@ -14,6 +14,7 @@ public class SigningKeyContents extends SigningKeyForPublication {
 	public Block toBlock() {
 		 Block b = super.toBlock();
          b.put("S", this.privateSigningKey.getEncoded());
+     	 b.name = b.name.substring(0,b.name.length()-2)+"-U";
          return b;
 	}
 	

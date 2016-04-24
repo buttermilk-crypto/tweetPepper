@@ -1,8 +1,14 @@
 package com.cryptoregistry.tweet.pepper;
 
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.cryptoregistry.tweet.pbe.PBE;
+import com.cryptoregistry.tweet.pbe.PBEParams;
 
 /**
  * A KMU or "KeyMaterialUnit" is a set which can contain keys, signatures, and associated arbitrary data.
@@ -38,5 +44,59 @@ public class KMU {
 	public KMU addBlock(Block block){
 		map.put(block.toString(), block);
 		return this;
+	}
+	
+	/**
+	 * <p>Any blocks of type -U will be altered:</p>
+	 * 
+	 * <ol>
+	 * 		<li>S will be encrypted and changed to X</li>
+	 * 		<li>the distinguished name will be changed to -X</li>
+	 * </ol>
+	 * 
+	 * <p>If the password value is forgotten there is no way to re-set it, and it cannot be set to null</p>
+	 * 
+	 * <p>this method takes some time and CPU, which is intentional. SCrypt is a strong KDF.</p>
+	 * 
+	 * @param password
+	 */
+	public void protectKeyBlocks(char [] password) {
+		List<Block> list = new ArrayList<Block>();
+		for(String s: map.keySet()){
+			Block b = map.get(s);
+			if(b.name.endsWith("-U")){
+				String base64UnsecureKey = b.get("S");
+				PBEParams params = TweetPepper.createPBEParams();
+				PBE pbe = new PBE(params);
+				String enc = pbe.protect(password, Base64.getUrlDecoder().decode(base64UnsecureKey));
+				b.remove("S");
+				b.put("X", enc);
+				list.add(b);
+			}
+		}
+		for(Block b: list){
+			map.remove(b.name);
+			b.name = b.name.substring(0,b.name.length()-2)+"-X";
+			map.put(b.name, b);
+		}
+	}
+	
+	/**
+	 * Open blocks of type -X if found in the KMU
+	 * 
+	 * @param password
+	 */
+	public void openKeyBlocks(char [] password) {
+		for(String s: map.keySet()){
+			Block b = map.get(s);
+			if(b.name.endsWith("-X")){
+				String base64SecureKey = b.get("X");
+				PBE pbe = new PBE();
+				byte [] confidentialKey = pbe.unprotect(password, base64SecureKey);
+				b.remove("X");
+				b.put("S", Base64.getUrlEncoder().encodeToString(confidentialKey));
+				b.name = b.name.substring(0,b.name.length()-2)+"-U";
+			}
+		}
 	}
 }

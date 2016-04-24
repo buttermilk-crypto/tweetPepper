@@ -14,7 +14,7 @@ import com.cryptoregistry.tweet.salt.TweetNaCl;
 import com.lambdaworks.crypto.SCrypt;
 
 /**
- * One-use class, erases bytes so nonce, etc., cannot be reused by accident
+ * Simple PBE based on scrypt and secretbox.
  * 
  * @author Dave
  *
@@ -26,13 +26,11 @@ public class PBE {
 	public PBE(PBEParams params) {
 		super();
 		this.params = params;
-		if(this.params.N == 0 || this.params.r == 0 || this.params.p == 0) throw new RuntimeException("Invalid Script predicates");
-		if(empty(params.nonce)) throw new RuntimeException("Nonce looks previously used");;
-		if(empty(params.scryptSalt)) throw new RuntimeException("salt looks previously used");;
+		if(this.params.N == 0 || this.params.r == 0 || this.params.p == 0) throw new RuntimeException("Invalid Scrypt predicates");
 	}
 
 	/**
-	 * Used with unprotect
+	 * Used with unprotect()
 	 */
 	public PBE() {
 		super();
@@ -40,12 +38,8 @@ public class PBE {
 	}
 
 	public String protect(char[] password, byte[] confidentialBytes) {
-		if (params == null)
-			throw new RuntimeException(
-					"Need to set params in constructor first before this call.");
-		if(empty(password)) 
-			throw new RuntimeException("Password cannot be empty.");
-		
+		if (params == null) throw new RuntimeException("Need to set params in constructor first before this call.");
+		if (password == null) throw new RuntimeException("Password cannot be null.");
 		TweetNaCl salt = new TweetNaCl();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		DataOutputStream doubt = new DataOutputStream(out);
@@ -67,8 +61,6 @@ public class PBE {
 
 			String encoded = Base64.getUrlEncoder().encodeToString(out.toByteArray());
 			cleanup(password); // clear password
-			cleanup(params.nonce);
-			cleanup(params.scryptSalt);
 			return encoded;
 		} catch (Exception x) {
 			throw new RuntimeException(x);
@@ -109,28 +101,8 @@ public class PBE {
 	private void cleanup(char[] array) {
 		Arrays.fill(array, '\u0000');
 	}
-	
-	private void cleanup(byte[] array) {
-		Arrays.fill(array, (byte)0);
-	}
-	
-	private boolean empty(byte[]array){
-		int sum = 0;
-		for(byte b: array){
-			sum+=b;
-		}
-		return sum==0;
-	}
-	
-	private boolean empty(char[]array){
-		int sum = 0;
-		for(int b: array){
-			sum+=b;
-		}
-		return sum==0;
-	}
 
-	public byte[] toBytes(char[] password) {
+	private byte[] toBytes(char[] password) {
 		CharBuffer charBuffer = CharBuffer.wrap(password);
 		ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
 		byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),

@@ -1,7 +1,6 @@
 package com.cryptoregistry.tweet;
 
 
-import java.io.InputStream;
 import java.io.StringWriter;
 
 import org.junit.Test;
@@ -16,12 +15,6 @@ import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 
 public class JSONTest {
 
-    @Test
-    public void parseJson() {
-      
-    	InputStream in = this.getClass().getResourceAsStream("/chinese-eyes.json");
- 
-    }
     
     @Test
     public void writeKMU() {

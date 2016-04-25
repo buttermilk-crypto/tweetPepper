@@ -1,8 +1,6 @@
 package com.cryptoregistry.tweet;
 
-import static com.lambdaworks.codec.Base64.decode;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;

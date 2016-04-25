@@ -1,0 +1,32 @@
+{
+  "Version": "Buttermilk Tweet Pepper 1.0",
+  "KMUHandle": "d11389ea-ab47-4d40-a7b6-e207abe08cfe-T",
+  "AdminEmail": "dave@cryptoregistry.com",
+  "Contents": {
+    "496b7348-64e9-4413-b744-bd3b3919c5e6-C": {
+      "contactType": "Person",
+      "GivenName.0": "Dave",
+      "FamilyName.0": "Smith",
+      "Email.0": "davesmith.gbs@gmail.com",
+      "MobilePhone.0": "+61449957431",
+      "Country": "AU"
+    },
+    "e834e809-6273-4b62-a017-3bd77229eb6b-D": {
+      "Copyright": "Copyright 2016 by David R. Smith. All Rights Reserved",
+      "TermsOfServiceAgreement": "I agree to cryptoregistry.com's Terms of Service",
+      "InfoAffirmation": "I affirm the information I have entered in this file is valid and correct."
+    },
+    "bb6d3992-57fb-4465-81a5-1c9c3ed02170-P": {
+      "KeyAlgorithm": "TweetNaCl",
+      "KeyUsage": "Boxing",
+      "CreatedOn": "2016-04-24T16:08:59.214+10:00",
+      "P": "9D7UXQTkkbLOjheerHV0I5IFHoRINw_EChXT3GnPmFs="
+    },
+    "f5a7f8c6-349b-454b-ab1c-e182c7bd0db4-P": {
+      "KeyAlgorithm": "TweetNaCl",
+      "KeyUsage": "Signing",
+      "CreatedOn": "2016-04-24T16:08:59.246+10:00",
+      "P": "ISOfr07vQ8AENwN20ZgbUy_ADM80qYZYtsAK-roTmCI="
+    }
+  }
+}

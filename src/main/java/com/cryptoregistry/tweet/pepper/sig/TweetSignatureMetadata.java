@@ -3,14 +3,14 @@
  *  Copyright 2011-2014 David R. Smith All Rights Reserved.
  *
  */
-package com.cryptoregistry.tweet.pepper;
+package com.cryptoregistry.tweet.pepper.sig;
 
 import java.util.Date;
 import java.util.UUID;
 
 public class TweetSignatureMetadata {
 	
-	public static final String defaultDigestAlg ="SHA-224";
+	public static final String defaultDigestAlg ="CubeHash-256";
 
 	public final String handle; 
 	public final Date createdOn; 
@@ -32,11 +32,11 @@ public class TweetSignatureMetadata {
 		this.signedBy = signedBy;
 	}
 
-	public TweetSignatureMetadata(String hashAlg, String signedWith,String signedBy){
+	public TweetSignatureMetadata(String hashAlg, String signedBy,String signedWith){
 		this(UUID.randomUUID().toString(),new Date(),hashAlg,signedWith,signedBy);
 	}
 	
-	public TweetSignatureMetadata(String signedWith,String signedBy){
+	public TweetSignatureMetadata(String signedBy,String signedWith){
 		this(UUID.randomUUID().toString(),new Date(),defaultDigestAlg,signedWith,signedBy);
 	}
 	

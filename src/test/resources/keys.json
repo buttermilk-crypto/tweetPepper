@@ -1,0 +1,19 @@
+{
+  "Version": "Buttermilk Tweet Pepper Keys 1.0",
+  "Contents": {
+    "bb6d3992-57fb-4465-81a5-1c9c3ed02170-X": {
+      "KeyAlgorithm": "TweetNaCl",
+      "KeyUsage": "Boxing",
+      "CreatedOn": "2016-04-24T16:08:59.214+10:00",
+      "P": "9D7UXQTkkbLOjheerHV0I5IFHoRINw_EChXT3GnPmFs=",
+      "X": "AABAAAAAAQAAAAABpNys6OLGznIVWRhygvj0MImb9Ig7jNky8BLJT59Pz2wL3XNNELzgT0jB_QBSURRJ3mmA4tonU1Loai5qKYFTAMnlNpkoHUUmVfpk9OkV0UHeP4Qj25Ev6Q=="
+    },
+    "f5a7f8c6-349b-454b-ab1c-e182c7bd0db4-X": {
+      "KeyAlgorithm": "TweetNaCl",
+      "KeyUsage": "Signing",
+      "CreatedOn": "2016-04-24T16:08:59.246+10:00",
+      "P": "ISOfr07vQ8AENwN20ZgbUy_ADM80qYZYtsAK-roTmCI=",
+      "X": "AABAAAAAAQAAAAABNy8QLSmCRtmVnY-Ph9I-UFsHpVjzOKJxy69vblu0H-N1W_XCGIbUm6uJpnRBwZGgLT_K_3uxQnR05GDw9NAlh9jwpPDBlfl_FPB6HWI-4Fq1d2fCa8kd6ZFOZHZbGioYN7xdhHvzc2UD3kFd0ooaJVEToDbcPNgm"
+    }
+  }
+}

@@ -12,7 +12,7 @@ import com.cryptoregistry.tweet.pbe.PBEParams;
 
 /**
  * A KMU or "KeyMaterialUnit" is a set which can contain keys, signatures, and associated arbitrary data.
- * It has a unique transaction ID and a contact email
+ * It has a unique transaction ID for use in transactions and an administrative contact email
  * 
  * @author Dave
  *
@@ -82,7 +82,8 @@ public class KMU {
 	}
 	
 	/**
-	 * Open blocks of type -X if found in the KMU
+	 * Open (unencrypt) blocks of type -X if found in the KMU. Currently this expects all protected keys to
+	 * have the same password.
 	 * 
 	 * @param password
 	 */
@@ -96,6 +97,33 @@ public class KMU {
 				b.remove("X");
 				b.put("S", Base64.getUrlEncoder().encodeToString(confidentialKey));
 				b.name = b.name.substring(0,b.name.length()-2)+"-U";
+			}
+		}
+	}
+	
+	/**
+	 * Given a block name, add (or update an existing) key and value
+	 * 
+	 * @param blockname
+	 * @param key
+	 * @param value
+	 */
+	public void updateBlock(String blockname, String key, String value){
+		for(String dname: map.keySet()){
+			if(blockname.equals(dname)){
+				Block item = map.get(dname);
+				item.put(key, value);
+				return;
+			}
+		}
+	}
+	
+	public void removeBlockItem(String blockname, String key){
+		for(String dname: map.keySet()){
+			if(blockname.equals(dname)){
+				Block item = map.get(dname);
+				item.remove(key);
+				return;
 			}
 		}
 	}

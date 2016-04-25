@@ -12,6 +12,8 @@ import com.cryptoregistry.tweet.pepper.TweetPepper;
 import com.cryptoregistry.tweet.pepper.format.KMUWriter;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
+import com.cryptoregistry.tweet.pepper.sig.TweetPepperSignature;
+import com.cryptoregistry.tweet.pepper.sig.TweetPepperSigner;
 
 public class JSONTest {
 
@@ -51,6 +53,12 @@ public class JSONTest {
       	  .addBlock(affirmations)
       	  .addBlock(pubBoxing)
       	  .addBlock(pubSigning);
+      	  
+      	  TweetPepperSigner signer = new TweetPepperSigner("Chinese_Knees", key1);
+      	  signer.addKMUBlocks(req);
+      	  TweetPepperSignature sig = signer.sign();
+      	  req.addBlock(sig.toBlock());
+      	  
       	  KMUWriter kmur = new KMUWriter(req);
       	  StringWriter reqWriter = new StringWriter();
       	  kmur.writeTo(reqWriter);

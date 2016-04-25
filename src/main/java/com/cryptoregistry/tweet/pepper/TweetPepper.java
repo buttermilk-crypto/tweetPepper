@@ -14,7 +14,7 @@ import com.cryptoregistry.tweet.pepper.key.TweetKeyMetadata;
 import com.cryptoregistry.tweet.salt.TweetNaCl;
 
 /**
- * Provide new PKI support tailored for use specifically with TweetNacl
+ * Provide PKI support tailored for use specifically with TweetNacl
  * 
  * @author Dave
  *
@@ -39,7 +39,7 @@ public final class TweetPepper {
 		byte [] sk0 = new byte[TweetNaCl.BOX_SECRET_KEY_BYTES];
 		salt.crypto_box_keypair(pk0, sk0, false);
 		BoxingKeyContents contents = new BoxingKeyContents(
-				TweetKeyMetadata.createMetadata(BlockType.U),
+				TweetKeyMetadata.createBoxingMetadata(BlockType.U),
 				new PublicKey(pk0),
 				new PrivateKey(sk0)
 		);
@@ -54,7 +54,7 @@ public final class TweetPepper {
 		byte [] sk0 = new byte[TweetNaCl.SIGN_SECRET_KEY_BYTES];
 		salt.crypto_sign_keypair(pk0, sk0, false);
 		SigningKeyContents contents = new SigningKeyContents(
-				TweetKeyMetadata.createMetadata(BlockType.U),
+				TweetKeyMetadata.createSigningMetadata(BlockType.U),
 				new PublicKey(pk0),
 				new PrivateKey(sk0)
 		);
@@ -67,7 +67,7 @@ public final class TweetPepper {
 		rand.nextBytes(sk);
 		SecretKey key = new SecretKey(sk); 
 		
-		return new SecretBoxKeyContents(TweetKeyMetadata.createMetadata(BlockType.U), key);
+		return new SecretBoxKeyContents(TweetKeyMetadata.createSecretBoxMetadata(BlockType.U), key);
 	}
 	
 	public static final PBEParams createPBEParams(){

@@ -18,7 +18,7 @@ public class SecretBoxKeyContents {
 	public Block toBlock() {
 		Block b = new Block(BlockType.U);
 		 b.put("KeyAlgorithm","TweetNaCl");
-		 b.put("KeyUsage",KeyUsage.SecretBox.toString());
+		 b.put("KeyUsage", metadata.keyUsage.toString());
 		 b.put("CreatedOn",TimeUtil.format(this.metadata.createdOn));
          b.put("S", this.key.getEncoded());
          return b;

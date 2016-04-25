@@ -18,7 +18,7 @@ public class BoxingKeyForPublication {
 	public Block toBlock() {
 		Block b = new Block(metadata.handle, BlockType.P);
 		 b.put("KeyAlgorithm","TweetNaCl");
-		 b.put("KeyUsage",KeyUsage.Boxing.toString());
+		 b.put("KeyUsage",metadata.keyUsage.toString());
 		 b.put("CreatedOn",TimeUtil.format(this.metadata.createdOn));
          b.put("P", this.publicKey.getEncoded());
          return b;

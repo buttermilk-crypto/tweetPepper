@@ -10,20 +10,30 @@ public class TweetKeyMetadata {
 	public final String handle;
 	public final BlockType blockType;
 	public final Date createdOn;
+	public final KeyUsage keyUsage;
 	
-	public TweetKeyMetadata(String handle, BlockType blockType, Date createdOn) {
+	public TweetKeyMetadata(String handle, BlockType blockType, Date createdOn, KeyUsage keyUsage) {
 		super();
 		this.handle = handle;
 		this.blockType = blockType;
 		this.createdOn = createdOn;
+		this.keyUsage = keyUsage;
 	}
 
 	public String toString() {
 		return handle+"-"+blockType.toString();
 	}
 	
-	public static TweetKeyMetadata createMetadata(BlockType t){
-		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date());
+	public static TweetKeyMetadata createSigningMetadata(BlockType t){
+		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date(),KeyUsage.Signing);
+	}
+	
+	public static TweetKeyMetadata createBoxingMetadata(BlockType t){
+		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date(),KeyUsage.Boxing);
+	}
+	
+	public static TweetKeyMetadata createSecretBoxMetadata(BlockType t){
+		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date(),KeyUsage.SecretBox);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.cryptoregistry.tweet.pepper;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -52,6 +53,13 @@ public class Block extends LinkedHashMap<String,String> {
 	
 	public String toString() {
 		return name;
+	}
+	
+	public void loadToSignatureScope(Map<String,String> scopeMap){
+		for(String key: keySet()) {
+			String value = get(key);
+			scopeMap.put(name+":"+key, value);
+		}
 	}
 
 }

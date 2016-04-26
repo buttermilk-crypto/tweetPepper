@@ -1,17 +1,22 @@
-# buttermilk tweetnacl-java
+# buttermilk tweetPepper
 
-This was forked from https://github.com/ianopolous/tweetnacl-java/
+This project was originally forked from https://github.com/ianopolous/tweetnacl-java/ which provided
+the nucleus for the rest of the code. Because that fork was GPL'd I cannot include it in buttermilk.
 
-* Mavenized
-* Formatted the code to please my eyes  
-* Transformed most of the static methods into instance methods
+See https://tweetnacl.cr.yp.to/ and https://nacl.cr.yp.to/ for details about "salt".
 
-It is a little frustrating that the code translators took a C program in the public domain and GPL'd their
-resulting translation into java. Kudo's to them, but the license is less than helpful since the original C code
-is explicitly intended to be included directly in projects! Not just GPL projects! 
+Bernstein et. al. present the big ideas here: https://tweetnacl.cr.yp.to/tweetnacl-20140917.pdf.
 
-Well, that's what was done. So I can't include this in buttermilk-core as a result, I have an Apache license 
-over there or in some cases a FOSS exception to GPL, but not GPLv2 as such.
+So, they can have the big ideas, I'm happy with that. I am working on a small idea, which is that a 
+crypto library is not much use without a PKI to support it. 
 
-However we can still do some things with the code. In keeping with the idea of being concise we can format the keys
-and do some other integrations in a concise way.  
+tweetPepper provides some support for things like key formats, protecting keys, and also has some ideas
+about how to use those in the context of twitter. 
+
+More details to follow as the coding continues.
+
+ 
+
+
+
+

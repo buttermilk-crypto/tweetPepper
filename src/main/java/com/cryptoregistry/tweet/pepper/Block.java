@@ -37,6 +37,11 @@ public class Block extends LinkedHashMap<String,String> {
 		name = uuid+"-"+type.toString();
 	}
 	
+	public Block(String dName) {
+		super();
+		name = dName;
+	}
+	
 	public BlockType getBlockType() {
 		final char val = name.charAt(name.length()-1);
 		switch(val){
@@ -49,6 +54,14 @@ public class Block extends LinkedHashMap<String,String> {
 		case 'T': return BlockType.T;
 		default: throw new RuntimeException("Unknown category: "+val);
 		}
+	}
+	
+	public boolean isU(){
+		return getBlockType()==BlockType.U;
+	}
+	
+	public boolean isX(){
+		return getBlockType()==BlockType.X;
 	}
 	
 	public String toString() {

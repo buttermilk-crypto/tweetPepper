@@ -47,7 +47,7 @@ public class TweetPepperVerifier {
 		return this;
 	}
 	
-	public boolean validate() {
+	public boolean verify() {
 		
 		// algorithm - 
 		// 1.0 - find the signature block. Assume for the moment there is only one.
@@ -74,7 +74,7 @@ public class TweetPepperVerifier {
 		
 		Block keyBlock = null;
 		for(Block b: blocks){
-			if(b.name.endsWith("-P") && b.get("KeyUsage").equals("Signing")&&b.name.startsWith(signedWith)){
+			if(b.name.endsWith("-P") && b.name.startsWith(signedWith)){
 				keyBlock = b;
 				break;
 			}
@@ -88,11 +88,15 @@ public class TweetPepperVerifier {
 		// 1.3 - create the appropriate Digest object
 		Digest digest = null;
 		switch(digestAlgorithm){
+			case "CubeHash-224": digest = new CubeHash224(); break;
+			case "CubeHash-256": digest = new CubeHash256(); break;
+			case "CubeHash-384": digest = new CubeHash384(); break;
+			case "CubeHash-512": digest = new CubeHash512(); break;
 			case "CubeHash224": digest = new CubeHash224(); break;
 			case "CubeHash256": digest = new CubeHash256(); break;
 			case "CubeHash384": digest = new CubeHash384(); break;
 			case "CubeHash512": digest = new CubeHash512(); break;
-			default: {throw new RuntimeException("Unknown digest algorithm, giving up."); }
+			default: {throw new RuntimeException("Unknown digest algorithm, giving up:"+digestAlgorithm); }
 		}
 		
 		// 1.4 - construct a map of the possible data with uuid:key <-> value entries; 

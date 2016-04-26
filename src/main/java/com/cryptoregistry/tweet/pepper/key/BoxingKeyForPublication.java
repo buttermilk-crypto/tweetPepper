@@ -1,5 +1,7 @@
 package com.cryptoregistry.tweet.pepper.key;
 
+import java.util.Base64;
+
 import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.util.TimeUtil;
@@ -13,6 +15,23 @@ public class BoxingKeyForPublication {
 		super();
 		this.publicKey = key;
 		this.metadata = metadata;
+	}
+	
+	public BoxingKeyForPublication(Block pubBlock){
+		BlockType type = pubBlock.getBlockType();
+		//if(!type.equals(BlockType.P)) throw new RuntimeException("Not a -P block");
+		String use = pubBlock.get("KeyUsage");
+		String createdOn = pubBlock.get("CreatedOn");
+		String P = pubBlock.get("P");
+		metadata = 
+				new TweetKeyMetadata(
+					pubBlock.name.substring(0,36), 
+					type, 
+					TimeUtil.getISO8601FormatDate(createdOn), 
+					KeyUsage.valueOf(use)
+				);
+		publicKey = new PublicKey(Base64.getUrlDecoder().decode(P));
+		
 	}
 	
 	public Block toBlock() {

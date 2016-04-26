@@ -45,11 +45,18 @@ public class KMUWriter {
 			contents.add(key, obj);
 		}
 		
-		String output = Json.object()
-		.add("Version", KMU.version)
-		.add("KMUHandle", kmu.kmuHandle)
-		.add("AdminEmail", kmu.adminEmail)
-		.add("Contents", contents).toString(WriterConfig.PRETTY_PRINT);
+		String output = null;
+		if(kmu.version.equals(KMU.transactionVersion)){
+		   output = Json.object()
+		   .add("Version", kmu.version)
+		   .add("KMUHandle", kmu.kmuHandle)
+		   .add("AdminEmail", kmu.adminEmail)
+		   .add("Contents", contents).toString(WriterConfig.PRETTY_PRINT);
+		}else{
+			 output = Json.object()
+			 .add("Version", kmu.version)
+			.add("Contents", contents).toString(WriterConfig.PRETTY_PRINT);
+		}
 		
 		try {
 			writer.write(output);

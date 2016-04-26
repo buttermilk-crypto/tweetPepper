@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import com.cryptoregistry.tweet.pbe.PBE;
 import com.cryptoregistry.tweet.pbe.PBEParams;
+import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
+import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 
 /**
  * A KMU or "KeyMaterialUnit" is a set which can contain keys, signatures, and associated arbitrary data.
@@ -19,16 +21,26 @@ import com.cryptoregistry.tweet.pbe.PBEParams;
  */
 public class KMU {
 
-	public static final String version = "Buttermilk Tweet Pepper 1.0";
+	public static final String transactionVersion = "Buttermilk Tweet Pepper 1.0";
 	public static final String confidentialKeyVersion = "Buttermilk Tweet Pepper Keys 1.0";
 	
+	public final String version;
 	public final String kmuHandle; // essentially a transaction handle, UUID that ends in "-T"
 	public final String adminEmail; // immediate contact for failures, etc
 	
 	public final Map<String, Block> map; // keys are distinguished-names to the blocks
 	
+	public KMU() {
+		super();
+		this.version = confidentialKeyVersion;
+		this.kmuHandle = null;
+		this.adminEmail = null;
+		this.map = new LinkedHashMap<String,Block>();
+	}
+	
 	public KMU(String adminEmail) {
 		super();
+		this.version = transactionVersion;
 		this.kmuHandle = UUID.randomUUID().toString()+"-"+BlockType.T;
 		this.adminEmail = adminEmail;
 		this.map = new LinkedHashMap<String,Block>();
@@ -36,6 +48,7 @@ public class KMU {
 
 	public KMU(String kmuHandle, String adminEmail) {
 		super();
+		this.version = transactionVersion;
 		this.kmuHandle = kmuHandle;
 		this.adminEmail = adminEmail;
 		this.map = new LinkedHashMap<String,Block>();
@@ -127,4 +140,43 @@ public class KMU {
 			}
 		}
 	}
+	
+	/**
+	 * Return the first appropriate block found as a rehydrated key or null if none found
+	 * 
+	 * @return the reydrated key if found
+	 */
+	public SigningKeyContents getSigningKey(){
+		for(String s: map.keySet()){
+			Block b = map.get(s);
+			if(b.name.endsWith("-U")){
+				if(b.containsKey("KeyUsage")&&b.get("KeyUsage").equals("Signing")) {
+					// found a signing key
+					return new SigningKeyContents(b);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Return the first appropriate block found as a rehydrated key or null if none found
+	 * 
+	 * @return the reydrated key if found
+	 */
+	public BoxingKeyContents getBoxingKey(){
+		for(String s: map.keySet()){
+			Block b = map.get(s);
+			if(b.name.endsWith("-U")){
+				if(b.containsKey("KeyUsage")&&b.get("KeyUsage").equals("Boxing")) {
+					// found a signing key
+					return new BoxingKeyContents(b);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 }

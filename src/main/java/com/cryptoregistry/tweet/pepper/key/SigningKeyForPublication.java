@@ -19,14 +19,13 @@ public class SigningKeyForPublication {
 	
 	public SigningKeyForPublication(Block pubBlock){
 		BlockType type = pubBlock.getBlockType();
-		if(!type.equals(BlockType.P)) throw new RuntimeException("Not a -P block");
 		String use = pubBlock.get("KeyUsage");
 		String createdOn = pubBlock.get("CreatedOn");
 		String P = pubBlock.get("P");
 		metadata = 
 				new TweetKeyMetadata(
-					pubBlock.name, 
-					BlockType.P, 
+					pubBlock.name.substring(0,36), 
+					type, 
 					TimeUtil.getISO8601FormatDate(createdOn), 
 					KeyUsage.valueOf(use)
 				);

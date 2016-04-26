@@ -10,8 +10,10 @@ import org.junit.Test;
 
 import com.cryptoregistry.tweet.pbe.PBE;
 import com.cryptoregistry.tweet.pbe.PBEParams;
+import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.TweetPepper;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
+import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 import com.cryptoregistry.tweet.salt.TweetNaCl;
 import com.cryptoregistry.tweet.salt.TweetNaCl.InvalidSignatureException;
 import com.lambdaworks.crypto.SCrypt;
@@ -120,7 +122,7 @@ public class TestIdeas {
 	@Test
 	public void predicateGeneration() {
 		
-		PBEParams params = TweetPepper.createPBEParams();
+		PBEParams params = TweetPepper.createPBEParams(); // the default 
 		Assert.assertTrue(params.N == 16384);
 		Assert.assertTrue(params.r == 256);
 		Assert.assertTrue(params.p == 1);
@@ -143,6 +145,18 @@ public class TestIdeas {
 		byte [] confidential = pbe1.unprotect(passwd.toCharArray(), X);
 		
 		Assert.assertTrue(Arrays.equals(contents.privateBoxingKey.getBytes(),confidential));
+	}
+	
+	@Test
+	public void keyFromBlock() {
+		SigningKeyContents contents = TweetPepper.generateSigningKeys();
+		Block ublock = contents.toBlock();
+		Block pblock = contents.pubBlock();
+		SigningKeyContents contents0 = new SigningKeyContents(ublock);
+		Block ublock0 = contents0.toBlock();
+		Block pblock0 = contents0.pubBlock();
+		Assert.assertTrue(ublock.equals(ublock0));
+		Assert.assertTrue(pblock.equals(pblock0));
 	}
 	
 }

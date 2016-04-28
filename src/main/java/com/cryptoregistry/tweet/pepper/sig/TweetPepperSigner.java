@@ -3,6 +3,7 @@ package com.cryptoregistry.tweet.pepper.sig;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -12,6 +13,7 @@ import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 import com.cryptoregistry.tweet.salt.TweetNaCl;
+import com.cryptoregistry.util.TimeUtil;
 
 public class TweetPepperSigner {
 
@@ -43,9 +45,14 @@ public class TweetPepperSigner {
 	}
 	
 	public TweetPepperSignature sign(){
+		
+		TweetSignatureMetadata meta = new TweetSignatureMetadata(signedBy, keyContents.metadata.handle);
+		Date signatureDateOfRecord = meta.createdOn;
+		
 		List<String> tokens = new ArrayList<String>();
 		digest.reset();
-		// top of digest is signedBy, signedWith. This means even an empty signature can be authenticated
+		// top of digest is dateOfRecord, signedBy, signedWith. This means even an empty signature can be authenticated
+		digest.update(TimeUtil.format(signatureDateOfRecord).getBytes(StandardCharsets.UTF_8));
 		digest.update(signedBy.getBytes(StandardCharsets.UTF_8));
 		digest.update(keyContents.metadata.handle.getBytes(StandardCharsets.UTF_8));
 		
@@ -69,8 +76,8 @@ public class TweetPepperSigner {
 		byte [] hash = digest.digest();
 		byte [] signatureBytes = new TweetNaCl().crypto_sign(hash, keyContents.privateSigningKey.getBytes());
 		
-		TweetSignatureMetadata meta = new TweetSignatureMetadata(signedBy, keyContents.metadata.handle);
-		return new TweetPepperSignature(meta,Base64.getUrlEncoder().encodeToString(signatureBytes),tokens);
+		
+		return new TweetPepperSignature(meta, Base64.getUrlEncoder().encodeToString(signatureBytes), tokens);
 	}
 
 }

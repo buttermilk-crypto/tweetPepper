@@ -69,6 +69,7 @@ public class TweetPepperVerifier {
 		final String digestAlgorithm = sigBlock.get("DigestAlgorithm");
 		final String sig = sigBlock.get("s");
 		final String dataRefs = sigBlock.get("DataRefs");
+		final String signatureDateOfRecord = sigBlock.get("CreateOn");
 		
 		// 1.2 - now locate the for-publication block (must be a signing key) and rehydrate the key
 		
@@ -107,7 +108,8 @@ public class TweetPepperVerifier {
 			block.loadToSignatureScope(scope);
 		}
 		
-		// 1.5.0 - digesting. The first items are always the SignedBy and SignedWith fields
+		// 1.5.0 - digesting. The first items are always the signature's CreatedOn, SignedBy and SignedWith fields
+		digest.update(signatureDateOfRecord.getBytes(StandardCharsets.UTF_8));
 		digest.update(signedBy.getBytes(StandardCharsets.UTF_8));
 		digest.update(signedWith.getBytes(StandardCharsets.UTF_8));
 		

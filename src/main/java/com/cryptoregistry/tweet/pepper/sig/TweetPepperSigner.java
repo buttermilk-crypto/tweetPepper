@@ -51,10 +51,20 @@ public class TweetPepperSigner {
 		
 		List<String> tokens = new ArrayList<String>();
 		digest.reset();
+		
 		// top of digest is dateOfRecord, signedBy, signedWith. This means even an empty signature can be authenticated
-		digest.update(TimeUtil.format(signatureDateOfRecord).getBytes(StandardCharsets.UTF_8));
+		// dateOfRecord
+		String sigDate = TimeUtil.format(signatureDateOfRecord);
+		digest.update(sigDate.getBytes(StandardCharsets.UTF_8));
+		tokens.add(meta.handle+"-S:"+"CreatedOn");
+		
+		// signedBy
 		digest.update(signedBy.getBytes(StandardCharsets.UTF_8));
+		tokens.add("."+"SignedBy");
+		
+		// signedWith
 		digest.update(keyContents.metadata.handle.getBytes(StandardCharsets.UTF_8));
+		tokens.add("."+"SignedWith");
 		
 		for(Block block: blocks){
 			String uuid = block.name;

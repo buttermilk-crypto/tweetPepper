@@ -28,11 +28,9 @@ import com.cryptoregistry.tweet.salt.TweetNaCl.InvalidSignatureException;
  */
 public class TweetPepperVerifier {
 	
-	protected final String signedBy;
 	protected final List<Block> blocks;
 
-	public TweetPepperVerifier(String signedBy) {
-		this.signedBy = signedBy;
+	public TweetPepperVerifier() {
 		blocks = new ArrayList<Block>();
 	}
 	
@@ -65,13 +63,13 @@ public class TweetPepperVerifier {
 		// 1.1 - within the signature block is the name of the public key block and other items, find them
 		
 		final String signedWith = sigBlock.get("SignedWith");
-		final String signedBy = sigBlock.get("SignedBy");
+	//	final String signedBy = sigBlock.get("SignedBy");
 		final String digestAlgorithm = sigBlock.get("DigestAlgorithm");
 		final String sig = sigBlock.get("s");
 		final String dataRefs = sigBlock.get("DataRefs");
-		final String signatureDateOfRecord = sigBlock.get("CreateOn");
+	//	final String signatureDateOfRecord = sigBlock.get("CreateOn");
 		
-		// 1.2 - now locate the for-publication block (must be a signing key) and rehydrate the key
+		// 1.2 - now locate the for-publication block (must be a signing key, not boxing) and rehydrate the key
 		
 		Block keyBlock = null;
 		for(Block b: blocks){
@@ -101,19 +99,22 @@ public class TweetPepperVerifier {
 		}
 		
 		// 1.4 - construct a map of the possible data with uuid:key <-> value entries; 
-		// this is the signature's available validation scope
+		// this is the signature's available validation scope; it includes the Signature block contents itself
 		
 		Map<String,String> scope = new HashMap<String,String>();
 		for(Block block: blocks){
 			block.loadToSignatureScope(scope);
 		}
 		
-		// 1.5.0 - digesting. The first items are always the signature's CreatedOn, SignedBy and SignedWith fields
-		digest.update(signatureDateOfRecord.getBytes(StandardCharsets.UTF_8));
-		digest.update(signedBy.getBytes(StandardCharsets.UTF_8));
-		digest.update(signedWith.getBytes(StandardCharsets.UTF_8));
+	//	System.err.println(scope);
 		
-		// 1.5.1 - run a loop on the data ref list. It will be normalized in the pass.
+		// 1.5.0 - digesting. The first items are always the signature's CreatedOn, SignedBy and SignedWith fields
+		// this is now done as part of the loop below
+	//	digest.update(signatureDateOfRecord.getBytes(StandardCharsets.UTF_8));
+	//	digest.update(signedBy.getBytes(StandardCharsets.UTF_8));
+	//	digest.update(signedWith.getBytes(StandardCharsets.UTF_8));
+		
+		// 1.5.1 - run a loop on the data ref list. The token items will be normalized in the pass.
 		// find the data items and digest in order
 		
 		String currentUUID = null;
@@ -134,7 +135,7 @@ public class TweetPepperVerifier {
 			// 1.5.1.3 - ok, now start testing the scope for items. It is an error if an expected 
 			// item is not present in the scope
 			String value = scope.get(ref);
-			if(value == null) throw new RuntimeException("Missing value in scope map");
+			if(value == null) throw new RuntimeException("Missing value in scope map, ref:"+ref);
 			digest.update(value.getBytes(StandardCharsets.UTF_8));
 		}
 		

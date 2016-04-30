@@ -154,7 +154,7 @@ public class JSONTest {
     	try (InputStreamReader reader = new InputStreamReader(in)){
     		KMUReader kmuReader = new KMUReader(reader);
     		KMU kmu = kmuReader.read();
-    		TweetPepperVerifier verifier = new TweetPepperVerifier("Chinese_Knees");
+    		TweetPepperVerifier verifier = new TweetPepperVerifier();
     		verifier.addKMUBlocks(kmu);
     		if(!verifier.verify()){
     			Assert.fail();

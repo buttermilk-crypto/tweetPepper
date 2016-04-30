@@ -1,9 +1,9 @@
 {
   "Version": "Buttermilk Tweet Pepper 1.0",
-  "KMUHandle": "5e9ba200-399e-4942-a6e2-7f1f59cd0c17-T",
+  "KMUHandle": "23e1a23f-f569-4740-9a59-f505c51251e9-T",
   "AdminEmail": "dave@cryptoregistry.com",
   "Contents": {
-    "ef0e25fd-1381-475d-86fb-b7619bdf2570-C": {
+    "6f6774a7-2bb7-4a04-8376-5f8796b67719-C": {
       "ContactType": "Person",
       "GivenName.0": "David",
       "FamilyName.0": "Smith",
@@ -12,7 +12,7 @@
       "TwitterHandle": "Chinese_Knees",
       "Country": "AU"
     },
-    "d767e004-fda7-4f5a-a104-e8fbb5d6545a-D": {
+    "bcea0342-936a-4772-b569-f67e6470f6f8-D": {
       "Copyright": "Copyright 2016 by David R. Smith. All Rights Reserved",
       "TermsOfServiceAgreement": "I agree to cryptoregistry.com's Terms of Service",
       "InfoAffirmation": "I affirm the information I have entered in this file is valid and correct."
@@ -29,13 +29,13 @@
       "CreatedOn": "2016-04-26T07:49:38.211+10:00",
       "P": "EY60jCbMaCjGZcbAep7v9c_siH7IObPqPfk-1dJ1CNo="
     },
-    "a685a9c3-3c0e-4e41-9d3b-45792f0e642a-S": {
-      "CreatedOn": "2016-04-28T20:35:33.194+10:00",
+    "8af43999-7e5f-470a-88d8-0364f82938b5-S": {
+      "CreatedOn": "2016-04-30T15:49:48.665+10:00",
       "DigestAlgorithm": "CubeHash-256",
       "SignedWith": "74cd46ce-cab9-403c-b3f6-61db1af3b518",
       "SignedBy": "Chinese_Knees",
-      "s": "mjvK8GxcEFO8Ek1xO5KGwavx0M286yQYzJdsACDHk8O0_t36oYAHROvrd1jLFHyzZK21G2wUbUowWS7waGKADn2xnX7cTRP_QF_Leqjyq9UewU5r45EXtqQrEfVu2q6J",
-      "DataRefs": "ef0e25fd-1381-475d-86fb-b7619bdf2570-C:ContactType, .GivenName.0, .FamilyName.0, .Email.0, .MobilePhone.0, .TwitterHandle, .Country, d767e004-fda7-4f5a-a104-e8fbb5d6545a-D:Copyright, .TermsOfServiceAgreement, .InfoAffirmation, f8dff898-0e78-466b-90d7-ef125aab1d6d-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P, 74cd46ce-cab9-403c-b3f6-61db1af3b518-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P"
+      "s": "JKwEjNVJWB5mZe7N_ufLraGmZb9siXL-_PItR0vwS9DuNbClfeR8bqnNZNW-HyGd4-iXrCUUr_TVVueZIAocDC1j4kOheCdpgKk3-BiYCTfJPbBYS_LMzIvU69gm1W69",
+      "DataRefs": "8af43999-7e5f-470a-88d8-0364f82938b5-S:CreatedOn, .SignedBy, .SignedWith, 6f6774a7-2bb7-4a04-8376-5f8796b67719-C:ContactType, .GivenName.0, .FamilyName.0, .Email.0, .MobilePhone.0, .TwitterHandle, .Country, bcea0342-936a-4772-b569-f67e6470f6f8-D:Copyright, .TermsOfServiceAgreement, .InfoAffirmation, f8dff898-0e78-466b-90d7-ef125aab1d6d-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P, 74cd46ce-cab9-403c-b3f6-61db1af3b518-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P"
     }
   }
 }

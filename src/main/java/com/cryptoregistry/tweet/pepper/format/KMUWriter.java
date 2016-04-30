@@ -12,8 +12,8 @@ import com.cryptoregistry.tweet.pepper.KMU;
 
 
 /**
- * Serialize to JSON. We're using internal classes for this (taken from https://github.com/ralfstx/minimal-json)
- * to avoid external dependencies
+ * Serialize KMU contents to JSON. We're using package-internal classes for this 
+ * (taken from https://github.com/ralfstx/minimal-json) to avoid external dependencies such as Jackson. 
  * 
  * @author Dave
  *

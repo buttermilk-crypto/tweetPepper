@@ -79,7 +79,7 @@ public class KMU {
 			Block b = map.get(s);
 			if(b.name.endsWith("-U")){
 				String base64UnsecureKey = b.get("S");
-				PBEParams params = TweetPepper.createPBEParams();
+				PBEParams params = new TweetPepper().createPBEParams();
 				PBE pbe = new PBE(params);
 				String enc = pbe.protect(password, Base64.getUrlDecoder().decode(base64UnsecureKey));
 				b.remove("S");

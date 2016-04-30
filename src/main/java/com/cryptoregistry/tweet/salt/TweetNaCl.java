@@ -11,9 +11,11 @@ import java.util.Random;
  */
 
 /**
- * This has been fairly radically transformed both in terms of formatting and organization from the original code,
- * to be object-oriented, thread-safe, and efficient in environments that are multi-threaded. - DRS
+ * The port has been transformed both in terms of formatting and organization from the original code
+ * to be object-oriented, thread-safe, and efficient in environments that are multi-threaded. 
+ * The class should not be used directly, but called through the "TweetPepper' interface - DRS
  *
+ * @see TweetPepper
  */
 
 public class TweetNaCl {

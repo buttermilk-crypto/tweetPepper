@@ -1,5 +1,6 @@
 package com.cryptoregistry.tweet.pepper;
 
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,7 +11,8 @@ import java.util.UUID;
  * <ol>
  *  <li>C = Contact data</li>
  *  <li>D = arbitrary string keys and values, Data</li>
- *  <li>P = key, for Publication part only</li>
+ *  <li>E = encrypted data</li>
+ *  <li>P = key, for-publication part only</li>
  *  <li>U = key contents, unsecured</li>
  *  <li>X = key contents, secured/encrypted</li>
  *  <li>S = Signature block</li>
@@ -47,6 +49,7 @@ public class Block extends LinkedHashMap<String,String> {
 		switch(val){
 		case 'C': return BlockType.C; 
 		case 'D': return BlockType.D;
+		case 'E': return BlockType.E;
 		case 'P': return BlockType.P;
 		case 'U': return BlockType.U;
 		case 'X': return BlockType.X;
@@ -54,6 +57,10 @@ public class Block extends LinkedHashMap<String,String> {
 		case 'T': return BlockType.T;
 		default: throw new RuntimeException("Unknown category: "+val);
 		}
+	}
+	
+	public boolean isP(){
+		return getBlockType()==BlockType.P;
 	}
 	
 	public boolean isU(){
@@ -68,11 +75,21 @@ public class Block extends LinkedHashMap<String,String> {
 		return name;
 	}
 	
+	/**
+	 * loads our contents into a map which is used for signature validation
+	 * 
+	 * @param scopeMap
+	 */
 	public void loadToSignatureScope(Map<String,String> scopeMap){
 		for(String key: keySet()) {
 			String value = get(key);
 			scopeMap.put(name+":"+key, value);
 		}
+	}
+	
+	public byte [] getBytesFromBase64urlString(String key){
+		if(!this.containsKey(key))throw new RuntimeException("key not present: "+key);
+		return Base64.getUrlDecoder().decode(get(key));
 	}
 
 }

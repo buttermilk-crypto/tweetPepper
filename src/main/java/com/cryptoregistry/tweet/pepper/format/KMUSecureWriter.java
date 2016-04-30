@@ -13,7 +13,9 @@ import com.cryptoregistry.tweet.pepper.KMU;
 
 
 /**
- * Given blocks with unsecured keys, transform them into secured ones and emit the output. Filter out any other block
+ * Given blocks or a KMU with unsecured keys, transform them into secured ones and emit the output. 
+ * Filter out any other block. This is used to write out confidential keys. This is a logical replacement for
+ * PKCS#8 and possibly PKCS#12
  * 
  * @author Dave
  *

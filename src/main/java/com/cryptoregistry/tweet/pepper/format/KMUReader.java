@@ -11,6 +11,13 @@ import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.tweet.pepper.KMU;
 
+/**
+ * Read the various blocks found in a JSON file and build a KMU or "Key Material Unit." A KMU is logically
+ * similar in function to a key store but has more flexibility (e.g., can contain arbitrary data, contacts, etc).
+ * 
+ * @author Dave
+ *
+ */
 public class KMUReader {
 	
 	private KMU kmu;

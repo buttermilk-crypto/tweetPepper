@@ -92,6 +92,7 @@ public class TestIdeas {
 		byte [] nonce = salt.gen_rand(TweetNaCl.BOX_NONCE_BYTES);
 		
 		byte [] result = salt.secretbox(msg, nonce, key);
+		Assert.assertTrue(Arrays.equals(msg, salt.secretbox_open(result, nonce, key)));
 		
 	}
 	
@@ -122,7 +123,7 @@ public class TestIdeas {
 	@Test
 	public void predicateGeneration() {
 		
-		PBEParams params = TweetPepper.createPBEParams(); // the default 
+		PBEParams params = new TweetPepper().createPBEParams(); // the default, takes about 10 seconds to run on my laptop
 		Assert.assertTrue(params.N == 16384);
 		Assert.assertTrue(params.r == 256);
 		Assert.assertTrue(params.p == 1);
@@ -134,22 +135,22 @@ public class TestIdeas {
 		
 		// key derivation input
 		String passwd = "password1";
-		PBEParams params = TweetPepper.createPBEParams();
+		PBEParams params = new TweetPepper().createPBEParams();
 		
-		BoxingKeyContents contents = TweetPepper.generateBoxingKeys();
+		BoxingKeyContents contents = new TweetPepper().generateBoxingKeys();
 		PBE pbe0 = new PBE(params);
-		String X = pbe0.protect(passwd.toCharArray(), contents.privateBoxingKey.getBytes());
+		String X = pbe0.protect(passwd.toCharArray(), contents.secretBoxingKey.getBytes());
 		System.err.println(X);
 		
 		PBE pbe1 = new PBE();
 		byte [] confidential = pbe1.unprotect(passwd.toCharArray(), X);
 		
-		Assert.assertTrue(Arrays.equals(contents.privateBoxingKey.getBytes(),confidential));
+		Assert.assertTrue(Arrays.equals(contents.secretBoxingKey.getBytes(),confidential));
 	}
 	
 	@Test
 	public void keyFromBlock() {
-		SigningKeyContents contents = TweetPepper.generateSigningKeys();
+		SigningKeyContents contents = new TweetPepper().generateSigningKeys();
 		Block ublock = contents.toBlock();
 		Block pblock = contents.pubBlock();
 		SigningKeyContents contents0 = new SigningKeyContents(ublock);
@@ -157,6 +158,23 @@ public class TestIdeas {
 		Block pblock0 = contents0.pubBlock();
 		Assert.assertTrue(ublock.equals(ublock0));
 		Assert.assertTrue(pblock.equals(pblock0));
+	}
+	
+	@Test
+	public void testEncrypt() {
+		
+		TweetPepper tp = new TweetPepper();
+		BoxingKeyContents mine = tp.generateBoxingKeys();
+		BoxingKeyContents theirs = tp.generateBoxingKeys();
+	
+		String msg = "Hello Tweet Salt Encryption";
+		
+		Block block = tp.encrypt(theirs, mine, msg);
+		
+		String result = tp.decrypt(theirs, mine, block);
+		
+		Assert.assertEquals(msg, result);
+		
 	}
 	
 }

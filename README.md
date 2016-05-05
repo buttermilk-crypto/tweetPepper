@@ -1,5 +1,8 @@
 # buttermilk tweetPepper
 
+tweetPepper provides some support for things like key formats, protecting keys, and also has some ideas
+about how to distribute keys via contemporary techniques like social media. 
+
 This project was originally forked from https://github.com/ianopolous/tweetnacl-java/ which provided
 the nucleus for the rest of the code. Because that fork was GPL'd I cannot include it in buttermilk.
 
@@ -10,10 +13,9 @@ Bernstein et. al. present the big ideas here: https://tweetnacl.cr.yp.to/tweetna
 So, they can have the big ideas, I'm happy with that. I am working on a small idea, which is that a 
 crypto library is not much use without a PKI to support it. 
 
-tweetPepper provides some support for things like key formats, protecting keys, and also has some ideas
-about how to distribute keys via contemporary techniques like social media. 
+## Motivating the idea
 
-Here's what some boxing and signing keys look like serialized to JSON (would replace key stores, PKCS#12 and PKCS#8):
+Here's what some boxing and signing keys look like serialized to JSON (think key stores, PKCS#12 and PKCS#8):
 
 	{
 	  "Version": "Buttermilk Tweet Pepper Keys 1.0",
@@ -35,14 +37,10 @@ Here's what some boxing and signing keys look like serialized to JSON (would rep
 	  }
 	}
 
-The private key is encrypted using Secret Box, but we generate that key using SCrypt to get a password-based store.
-SCrypt is implemented using http://mvnrepository.com/artifact/com.lambdaworks/scrypt/1.4.0. 
-
 This protection format is intended to remain local to the secret keeper (i.e., is not for key publication).
 
-Here's what a transactional block looks like. This is input for, e.g., a web service call. It contains a verifiable
-signature over the contents which includes public keys, an info affirmation, and contact info. This is intended to
-replace X-509.
+Here's what an item intended for publication might look like. This is for, e.g., a web service call. It contains a verifiable
+signature over the contents which includes public keys, an info affirmation, and contact info. Think replacement for X-509.
 
 	{
 	  "Version": "Buttermilk Tweet Pepper 1.0",
@@ -89,21 +87,22 @@ replace X-509.
 
 ## API Quickstart
 
-The TweetSalt core class. This has been reworked to be more easily usable in a thread-safe way, made object-oriented, and also 
-formatted to my Java programmer eyes:
+The TweetSalt core class. This has been reworked to be more usable: thread-safe, object-oriented, and also 
+formatted for my Java programmer eyes:
 
 https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/salt/TweetNaCl.java
 
-The Methods are still as in the documentation for TweetNaCl.
+The methods are still named as in the project we forked from.
 
-TweetPepper takes this a step further with a TweetPepper class which wraps the API and augments it with methods for other
+TweetPepper takes this a step further with a class wrapping the core API and augments it with methods for other
 things you probably want to do with cryptography.
 
 Use: 
 
 	// 1.0 key generation, nice to have boxing and signing keys in a set
-	BoxingKeyContents key0 = new TweetPepper().generateBoxingKeys();
-	SigningKeyContents key1 = new TweetPepper().generateSigningKeys();
+	TweetPepper tp = new TweetPepper();
+	BoxingKeyContents key0 = tp.generateBoxingKeys();
+	SigningKeyContents key1 = tp.generateSigningKeys();
 	
 	// 1.1 a KMU or KeyMaterialsUnit is a container for blocks. 
 	KMU confidential = new KMU("dave@cryptoregistry.com");
@@ -128,28 +127,29 @@ Example output is two blocks of type "X" as seen above on this page.
 The implementation contains a nice class hierarchy for keys. The chief benefit is strong typing to
 represent the keys which otherwise would be merely byte arrays. 
 
-All keys contain some meta data, which currently is defined as the date and time of creation, the Block type, and the key usage (boxing, signing, or secretbox).
+All keys contain some metadata, which currently is defined as the date and time of creation, the Block type, and the key usage (boxing, signing, or secretbox).
  
 
 ## Blocks and KMUs
 
-In my work on identifying a replacement for some of the classic ASN.1 structures such as PKCS#12, (which has
-been described as "a transfer syntax for personal identity information, including private keys, certificates, miscellaneous secrets, and extensions") I have found that JSON provides the best feature set. In the current
-scenario we are working with Blocks and KMUs, or Key Material Units. These have JSON representations and
-are probably best illustrated in that format.
+PKCS#12 has been described as "a transfer syntax for personal identity information, including private keys, certificates, miscellaneous secrets, and extensions". In my work on identifying a replacement for this type of general construct, 
+I find JSON provides the best contemporary encoding. 
 
-A Block is essentially a named map. The name is intended to be unique across the use domain of the data, e.g.,
-if the domain is the internet, the name should be unique across all of the internet. The best way to achieve this
-is with a UUID. UUIDs are 128 bit data structures, they have a standard textual representation, and are easy
-to process in almost any programming language. 
+Blocks and KMUs (or Key Material Units) are map-like data structures which have simple JSON representations. They
+are intended to replace the complexity of the security objects built on ASN.1 with something more amenable to the
+project of ubiquitous cryptography.  
 
-Blocks are intentionally limited to String key-value pairs - numbers or other JSON constructs are not expected to
-be present in any block. 
+A Block is essentially a named map. I sometimes use the terminology "distinguished map." The name is intended 
+to be unique across the use domain of the data, e.g., if the domain is the internet, the name should be unique 
+across all of the internet. The best way I have found to achieve this is with a UUID. UUIDs are 128 bit data 
+structures, they have a standard textual representation, and are easy to process in almost any programming language. 
+
+The map part of the block is intentionally limited to String key-value pairs.  
 
 Blocks have types. The type is essentially a descriptor for what we expect to find in the block, for example an -S
 type block is a signature block and is expected to have signature-related data and nothing else. A -C type block
 contains contact information and nothing else. And so on. The com.cryptoregistry.tweet.pepper.BlockType enum defines
-the types. 
+these types. 
 
 The block type is appended at the end of the name of the block using a dash and a capital letter, e.g., <UUID>-D.
 
@@ -169,21 +169,20 @@ Here is a block showing contact information:
 	}
 
 In JSON terminology it is an object with one key - the name - and a value which is a nested object of String keys and values. Notice that the keys take a special form, if the key is potentially multivariate like the GivenName, then it is
-appended with a zero-based integer. Note that the phone number is in international format including the plus sign and
+appended with a zero-based integer. Also notice the phone number is in international format including the plus sign and
 country code.  
 
-That's basically all there is to Blocks.
+That's basically all there is to say here about Blocks.
 
-KMUs or Key Material Units are data structures which consist mostly of blocks. KMUs are JSON objects with the following keys:
+KMUs or Key Material Units are container data structures which hold blocks. KMUs are represented by JSON objects with the following keys:
 
   + Version
   + KMUHandle - a UUID with appended -T
   + AdminEmail - an email address which is supposed to be more or less anonymous, like admin@mywebsite.com
   + Contents - an object containing an arbitrary number of blocks.
 
-That's basically all there is to know about KMUs. For internal use (when the KMU is never leaving the local
-processing) the KMUHandle and AdminEmail are sometimes not required. The KMUHandle is intended to work as
-a transaction token. 
+That's basically all there is to know about KMUs in order to use them. Note that for internal use (when the KMU is 
+never intended to represent published data) then the KMUHandle and AdminEmail are sometimes not required. The KMUHandle is intended to work as a transaction token and the email an automated way to contact someone about that transaction. 
  
 ## Digital Signature Support
 
@@ -205,7 +204,7 @@ at some later date. The signature is detached in it's own block, which has been 
 	
 The block is of type -S, for signature.
 
-The CreatedOn date and time is encoded in full ISO 8601 format. 
+The CreatedOn date/time is encoded in full ISO 8601 format. 
 
 The DigestAlgorithm is currently one of CubeHash-224, CubeHash-256, CubeHash-384, or CubeHash-512.
 
@@ -213,7 +212,7 @@ The SignedWith field indicates the signing key's block name. Note that it does n
 
 The SignedBy field is in this implementation the Twitter handle of the secret keeper for the signing key. 
 
-The s field are the signature bytes themselves in Base64url encoded format.
+The "s" field contains the signature bytes themselves in Base64url encoded format.
 
 The DataRefs field is a list of the signed items in digest order. The items are in a distinguished form: the
 full UUID and block type of the block the item is in, plus the key for the value. However, if the next item
@@ -265,9 +264,9 @@ public signing key in a -P block, and an -S block to validate:
 
 There are several different informal schemes available:
 
-  + Use Secret Box. This is the most simple approach.
+  + Use Secret Box. This is a simple approach for local use.
   + Use SCrypt + Secret Box. This is the right approach if the key is to be based on a password.
-  + Use authenticated encryption based on the crypto_box function
+  + Use authenticated encryption based on the crypto_box function. This is for Diffie-Hellman type situations.
   + Use authenticated encryption+key encapsulation through crypto_box/Salsa20 combination.
   
 

@@ -13,12 +13,5 @@
     <version>1.4.0</version>
   </dependency>
   
-  <!--  this is the twitter api -->
-   <dependency>
-           <groupId>org.twitter4j</groupId>
-           <artifactId>twitter4j-core</artifactId>
-           <version>[4.0,)</version>
-       </dependency>
-  
   </dependencies>
 </project>

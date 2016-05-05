@@ -14,7 +14,7 @@ import com.cryptoregistry.tweet.salt.TweetNaCl;
 import com.lambdaworks.crypto.SCrypt;
 
 /**
- * Simple PBE based on scrypt and secretbox.
+ * Simple to use but powerful PBE based on scrypt and secretbox.
  * 
  * @author Dave
  *

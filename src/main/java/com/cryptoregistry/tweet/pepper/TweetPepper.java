@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
 
+import com.cryptoregistry.tweet.pbe.PBE;
 import com.cryptoregistry.tweet.pbe.PBEParams;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyForPublication;
@@ -27,9 +28,9 @@ import com.cryptoregistry.tweet.salt.stream.Salsa20;
  * Provide PKI support tailored for use specifically with TweetNacl
  * 
  * @author Dave
- *
+ * @see com.cryptoregistry.tweet.pepper.sig package for digital signature support classes
  */
-public class TweetPepper {
+public final class TweetPepper {
 
 	private final SecureRandom rand = initRand();
 	public final TweetNaCl salt = new TweetNaCl();
@@ -46,6 +47,11 @@ public class TweetPepper {
 		}
 	}
 
+	/**
+	 * Build a java object representation of a key for use in boxing using the crypto_box function.
+	 * 
+	 * @return
+	 */
 	public BoxingKeyContents generateBoxingKeys() {
 
 		byte[] pk0 = new byte[TweetNaCl.BOX_PUBLIC_KEY_BYTES];
@@ -57,6 +63,11 @@ public class TweetPepper {
 		return contents;
 	}
 
+	/**
+	 * Build a java object representation of a key for use in signing.
+	 * 
+	 * @return
+	 */
 	public SigningKeyContents generateSigningKeys() {
 
 		byte[] pk0 = new byte[TweetNaCl.SIGN_PUBLIC_KEY_BYTES];
@@ -68,6 +79,11 @@ public class TweetPepper {
 		return contents;
 	}
 
+	/**
+	 * Build a java object representation of a key for use in secret key boxing. 
+	 * 
+	 * @return
+	 */
 	public final SecretBoxKeyContents generateSecretKey() {
 
 		byte[] sk = new byte[TweetNaCl.BOX_SECRET_KEY_BYTES];
@@ -78,6 +94,11 @@ public class TweetPepper {
 				TweetKeyMetadata.createSecretBoxMetadata(BlockType.U), key);
 	}
 
+	/**
+	 * Convenience method to build a PBEParam object. Note that these are one-use objects. 
+	 * 
+	 * @return
+	 */
 	public final PBEParams createPBEParams() {
 		byte[] scryptSalt = new byte[16];
 		rand.nextBytes(scryptSalt);
@@ -85,14 +106,64 @@ public class TweetPepper {
 		rand.nextBytes(secretBoxNonce);
 		return new PBEParams(scryptSalt, secretBoxNonce);
 	}
+	
+	/**
+	 * <p>Return a Base64url encoded string, which is the parameters followed by an encrypted representation of 
+	 * the confidentialBytes. Method:</p>
+	 * 
+	 * <ol>
+	 *  <li>construct a parameter consisting of:</li>
+	 *  	<ul>
+	 *  		<li>a 16 byte random scrypt salt</li>
+	 *  		<li>a 24 byte random nonce for the secretbox function</li>
+	 *  		<li>N, r, and p values for scrypt. Defaults are N = 2^14, r = 2^8, p = 1.</li>
+	 *  	</ul>
+	 *  <li>The PBE builds an scrypt key from password, and then runs secretbox function
+	 *      public byte[] secretbox(byte[] mesage, byte[] nonce, byte[] key);
+	 *     </li>
+	 *  <li>the output is encoded to a byte stream in the following fashion:</li>
+	 *   <ul>
+	 *   	<li>N (32 bit int), r (32 bit int), p (32 bit int), scrypt salt (16 bytes), secretbox nonce (24 bytes),
+	 *   		and then the secret bytes (variable length). </li> 
+	 *   </ul>
+	 *  </ol>
+	 *  
+	 *  <p>Note: password cannot be null. Also, my default scrypt parameters do take some time to run:
+	 *  perhaps 30 seconds on my old laptop. You can back off on these if you like to make encryption 
+	 *  time faster.</p>
+	 * 
+	 * 
+	 * @param password
+	 * @param confidentialBytes
+	 * @return an encrypted string
+	 */
+	public String protect(char [] password, byte [] confidentialBytes){
+		if(password == null) throw new RuntimeException("password cannot be null.");
+		PBEParams params = createPBEParams();
+		PBE pbe = new PBE(params);
+		return pbe.protect(password, confidentialBytes);
+	}
+	
+	/**
+	 * output the protected bytes. 
+	 * 
+	 * @param password
+	 * @param protectedString
+	 * @return
+	 */
+	public byte [] unprotect(char[]password, String protectedString){
+		PBE pbe = new PBE();
+		return pbe.unprotect(password, protectedString);
+	}
 
 	/**
-	 * This is a basic encryption using the crypto_box function directly on input
+	 * This is a basic TweetNaCL authenticated encryption using the crypto_box function. Emit a block of type E.
+	 * This is best suited to smaller payloads. 
 	 * 
 	 * @param receiverPublicBoxingKey
 	 * @param senderSecretBoxingKey
 	 * @param in
-	 * @return
+	 * @return a Block of type E
 	 */
 	public Block encrypt(
 			BoxingKeyForPublication receiverPublicBoxingKey,
@@ -120,7 +191,7 @@ public class TweetPepper {
 	 * @param receiverSecretBoxingKey
 	 * @param senderPublicBoxingKey
 	 * @param block
-	 * @return
+	 * @return a UTF-8 string, the unboxed result
 	 */
 	public String decrypt(
 			BoxingKeyContents receiverSecretBoxingKey,
@@ -147,12 +218,13 @@ public class TweetPepper {
 
 	/**
 	 * Use crypto_box for key encapsulation and Salsa20 as the stream cipher. This is for larger inputs. There is a significant 
-	 * improvement on speed this way perhaps by a factor of 10.
+	 * improvement on speed this way for larger payloads (perhaps by a factor of 7) as compared to crypto_box 
+	 * function by itself.
 	 * 
 	 * @param receiverPublicBoxingKey
 	 * @param senderSecretBoxingKey
 	 * @param in
-	 * @return a block with the encoded contents
+	 * @return a block of type E with the encoded contents
 	 */
 	public Block encryptSalsa20(
 			BoxingKeyForPublication receiverPublicBoxingKey,
@@ -209,7 +281,7 @@ public class TweetPepper {
 	}
 	
 	/**
-	 * Decrypt using crypto_box for key encapsulation and Salsa20 as the stream cipher. 
+	 * Decrypt the above (using crypto_box for key encapsulation and Salsa20 as the stream cipher). 
 	 * 
 	 * @param receiverPublicBoxingKey
 	 * @param senderSecretBoxingKey

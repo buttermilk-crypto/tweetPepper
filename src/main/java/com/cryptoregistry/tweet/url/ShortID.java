@@ -7,14 +7,9 @@ import java.util.List;
 
 /**
  * <pre>
- * ShortID: Bijective conversion between natural numbers (IDs) and short(er) strings
+ * Bijective conversion between natural numbers (IDs) and short strings.
  *
- * ShortID.encode() takes an integer ID such as a primary key from a database and turns it into a short(er) string
- * ShortID.decode() takes a short string and turns it into an ID
- *
- * Algorithm (but not code) is due to
- * 
- * http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener
+ * Algorithm is due to http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener
  * 
  * </pre>
  * 
@@ -67,6 +62,7 @@ public final class ShortID {
 
 		return buf.toString();
 	}
+	
 
 	public int decode(String str) {
 		int value = 0;

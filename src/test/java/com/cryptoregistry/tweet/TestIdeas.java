@@ -6,6 +6,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cryptoregistry.tweet.pbe.PBE;
@@ -19,6 +20,11 @@ import com.cryptoregistry.tweet.salt.TweetNaCl.InvalidSignatureException;
 import com.lambdaworks.crypto.SCrypt;
 
 public class TestIdeas {
+	
+	@BeforeClass
+	public static void warning() {
+		System.err.println("These tests take some time to run. Don't be alarmed.");
+	}
 
 	@Test
 	public void testAuthEncrypt() {
@@ -168,12 +174,11 @@ public class TestIdeas {
 		BoxingKeyContents theirs = tp.generateBoxingKeys();
 	
 		String msg = "Hello Tweet Salt Encryption";
-		
 		Block block = tp.encrypt(theirs, mine, msg);
-		
 		String result = tp.decrypt(theirs, mine, block);
-		
 		Assert.assertEquals(msg, result);
+		
+		System.err.println(Block.toJSON(block));
 		
 	}
 	

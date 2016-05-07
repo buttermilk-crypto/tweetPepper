@@ -1,9 +1,13 @@
 package com.cryptoregistry.tweet.pepper;
 
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import com.cryptoregistry.json.JsonObject;
+import com.cryptoregistry.json.WriterConfig;
 
 /**
  * <p>A Block is a linked hash map with a unique identifier and a type:</p>
@@ -90,6 +94,23 @@ public class Block extends LinkedHashMap<String,String> {
 	public byte [] getBytesFromBase64urlString(String key){
 		if(!this.containsKey(key))throw new RuntimeException("key not present: "+key);
 		return Base64.getUrlDecoder().decode(get(key));
+	}
+	
+	public static String toJSON(Block block)  {
+		
+		JsonObject contents = new JsonObject();
+		
+		JsonObject obj = new JsonObject();
+		Iterator<String> biter = block.keySet().iterator();
+			while(biter.hasNext()){
+				String itemKey = biter.next();
+				String itemValue = block.get(itemKey);
+				obj.add(itemKey, itemValue);
+			}
+			
+		contents.add(block.name, obj);
+		return contents.toString(WriterConfig.PRETTY_PRINT);
+		
 	}
 
 }

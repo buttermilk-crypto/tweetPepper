@@ -44,7 +44,7 @@ public class SigningKeyForPublication {
 		String P = pubBlock.get("P");
 		metadata = 
 				new TweetKeyMetadata(
-					pubBlock.name.substring(0,36), 
+					pubBlock.name.substring(0,pubBlock.name.length()-2), 
 					type, 
 					TimeUtil.getISO8601FormatDate(createdOn), 
 					KeyUsage.valueOf(use)

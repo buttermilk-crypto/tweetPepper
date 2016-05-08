@@ -32,6 +32,7 @@ import com.cryptoregistry.tweet.pbe.PBE;
 import com.cryptoregistry.tweet.pbe.PBEParams;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
+import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
 /**
  * A KMU or "KeyMaterialUnit" is a set which can contain keys, signatures, and associated arbitrary data.
@@ -69,7 +70,8 @@ public class KMU {
 	public KMU(String adminEmail) {
 		super();
 		this.version = transactionVersion;
-		this.kmuHandle = UUID.randomUUID().toString()+"-"+BlockType.T;
+		BijectiveEncoder enc= new BijectiveEncoder();
+		this.kmuHandle = enc.encode(UUID.randomUUID())+"-"+BlockType.T;
 		this.adminEmail = adminEmail;
 		this.map = new LinkedHashMap<String,Block>();
 	}

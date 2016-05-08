@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import com.cryptoregistry.json.JsonObject;
 import com.cryptoregistry.json.WriterConfig;
+import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
 /**
  * <p>A Block is a linked hash map with a unique identifier and a type:</p>
@@ -55,14 +56,20 @@ public class Block extends LinkedHashMap<String,String> {
 
 	public Block(BlockType type) {
 		super();
-		name = UUID.randomUUID().toString()+"-"+type.toString();
+		BijectiveEncoder bj = new BijectiveEncoder();
+		name = bj.encode(UUID.randomUUID())+"-"+type.toString();
 	}
 	
-	public Block(String uuid, BlockType type) {
+	public Block(String base, BlockType type) {
 		super();
-		name = uuid+"-"+type.toString();
+		name = base+"-"+type.toString();
 	}
 	
+	/**
+	 * Used with the full Base-BlockType value
+	 *  
+	 * @param dName
+	 */
 	public Block(String dName) {
 		super();
 		name = dName;
@@ -113,6 +120,16 @@ public class Block extends LinkedHashMap<String,String> {
 	
 	public String baseName() {
 		return name.substring(0, name.length()-2);
+	}
+	
+	/**
+	 * Return a traditional UUID
+	 * 
+	 * @return
+	 */
+	public UUID baseToUUID() {
+		BijectiveEncoder bj = new BijectiveEncoder();
+		return bj.decode(baseName());
 	}
 	
 	/**

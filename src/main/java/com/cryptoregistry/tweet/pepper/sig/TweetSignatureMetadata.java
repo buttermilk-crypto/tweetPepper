@@ -23,6 +23,8 @@ package com.cryptoregistry.tweet.pepper.sig;
 import java.util.Date;
 import java.util.UUID;
 
+import com.cryptoregistry.tweet.url.BijectiveEncoder;
+
 public class TweetSignatureMetadata {
 	
 	public static final String defaultDigestAlg ="CubeHash-256";
@@ -37,10 +39,10 @@ public class TweetSignatureMetadata {
 	// normally not part of the signature, advisory only
 	public String apropos;
 
-	public TweetSignatureMetadata(String handle, Date createdOn, String digestAlg, String signedWith,
+	public TweetSignatureMetadata(String base, Date createdOn, String digestAlg, String signedWith,
 			String signedBy) {
 		super();
-		this.handle = handle;
+		this.handle = base;
 		this.createdOn = createdOn;
 		this.digestAlg = digestAlg;
 		this.signedWith = signedWith;
@@ -48,11 +50,12 @@ public class TweetSignatureMetadata {
 	}
 
 	public TweetSignatureMetadata(String hashAlg, String signedBy,String signedWith){
-		this(UUID.randomUUID().toString(),new Date(),hashAlg,signedWith,signedBy);
+		
+		this(new BijectiveEncoder().encode(UUID.randomUUID()),new Date(),hashAlg,signedWith,signedBy);
 	}
 	
 	public TweetSignatureMetadata(String signedBy,String signedWith){
-		this(UUID.randomUUID().toString(),new Date(),defaultDigestAlg,signedWith,signedBy);
+		this(new BijectiveEncoder().encode(UUID.randomUUID()),new Date(),defaultDigestAlg,signedWith,signedBy);
 	}
 	
 

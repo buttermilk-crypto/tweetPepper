@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.cryptoregistry.tweet.pepper.BlockType;
+import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
 public class TweetKeyMetadata {
 
@@ -45,15 +46,19 @@ public class TweetKeyMetadata {
 	}
 	
 	public static TweetKeyMetadata createSigningMetadata(BlockType t){
-		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date(),KeyUsage.Signing);
+		BijectiveEncoder enc = new BijectiveEncoder();
+		return new TweetKeyMetadata(enc.encode(UUID.randomUUID()), t, new Date(),KeyUsage.Signing);
 	}
 	
 	public static TweetKeyMetadata createBoxingMetadata(BlockType t){
-		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date(),KeyUsage.Boxing);
+		BijectiveEncoder enc = new BijectiveEncoder();
+		return new TweetKeyMetadata(enc.encode(UUID.randomUUID()), t, new Date(),KeyUsage.Boxing);
 	}
 	
 	public static TweetKeyMetadata createSecretBoxMetadata(BlockType t){
-		return new TweetKeyMetadata(UUID.randomUUID().toString(), t, new Date(),KeyUsage.SecretBox);
+		BijectiveEncoder enc = new BijectiveEncoder();
+		return new TweetKeyMetadata(enc.encode(UUID.randomUUID()), t, new Date(),KeyUsage.SecretBox);
 	}
+	
 
 }

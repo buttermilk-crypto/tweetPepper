@@ -107,15 +107,15 @@ public class JSONTest {
     		KMUInAdapter kmuReader = new KMUInAdapter(reader);
     		KMU kmu = kmuReader.read();
     		Assert.assertEquals(2, kmu.map.size());
-    		Assert.assertNotNull(kmu.map.get("f8dff898-0e78-466b-90d7-ef125aab1d6d-X"));
-    		Assert.assertNotNull(kmu.map.get("74cd46ce-cab9-403c-b3f6-61db1af3b518-X"));
+    		Assert.assertNotNull(kmu.map.get("11UO37mprBYTu687QaVFha-X"));
+    		Assert.assertNotNull(kmu.map.get("jHaarE7kJgHj0VuRzpl7Y-X"));
     		
     		KMUOutAdapter kwriter = new KMUOutAdapter(kmu);
          	StringWriter reqWriter = new StringWriter();
          	kwriter.writeTo(reqWriter);
          	String test = reqWriter.toString();
-         	Assert.assertTrue(test.contains("f8dff898-0e78-466b-90d7-ef125aab1d6d-X"));
-         	Assert.assertTrue(test.contains("74cd46ce-cab9-403c-b3f6-61db1af3b518-X"));
+         	Assert.assertTrue(test.contains("11UO37mprBYTu687QaVFha-X"));
+         	Assert.assertTrue(test.contains("jHaarE7kJgHj0VuRzpl7Y-X"));
     		
     		
     		char [] pass = {'p','a','s','s'};
@@ -126,8 +126,6 @@ public class JSONTest {
     		Assert.assertNotNull(bc);
     		//Assert.assertTrue(bc.metadata.handle.equals("f8dff898-0e78-466b-90d7-ef125aab1d6d-U"));
     	//	Assert.assertTrue(sc.metadata.handle.equals("74cd46ce-cab9-403c-b3f6-61db1af3b518-U"));
-    		
-    		
     		
     	} catch (IOException e) {
 			e.printStackTrace();

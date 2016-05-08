@@ -20,19 +20,19 @@ Here's what some boxing and signing keys look like serialized to JSON (think key
 	{
 	  "Version": "Buttermilk Tweet Pepper Keys 1.0",
 	  "Contents": {
-	    "f8dff898-0e78-466b-90d7-ef125aab1d6d-X": {
+	    "11UO37mprBYTu687QaVFha-X": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Boxing",
-	      "CreatedOn": "2016-04-26T07:49:38.179+10:00",
-	      "P": "qxaCCEah63oAOA9fQ1JI5Xi0lQtosv7ujzxpBqA8vVc=",
-	      "X": "AABAAAAAAQAAAAAB6Bvv_9iQF5cS_TDNsoX4gvv_yLTMcSGqM1URAQafvTEdzt3huhw90AIbe2d7GrDRIMXuCX0KWMUAGy5UyMVnfzYl3Y37gqz7qAsEbz8nf8ucgbBDIoRO4Q=="
+	      "CreatedOn": "2016-05-08T17:14:47.745+10:00",
+	      "P": "uqTj9dqubWgnkID-XWvrH-4enInYxJBBLwZw2B5zvjU=",
+	      "X": "AABAAAAAAEAAAAABbTOjDs_BebL7EBQVKfJ-bPlDtBEGqjOLx60oo6WK1Lij2bohxLgU9AHMzY-YUVz66yg_QYEN54SCH7FPJhHcna8SZKPpK5iIv_i_X9rB8ku7atzNMGWehg=="
 	    },
-	    "74cd46ce-cab9-403c-b3f6-61db1af3b518-X": {
+	    "jHaarE7kJgHj0VuRzpl7Y-X": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Signing",
-	      "CreatedOn": "2016-04-26T07:49:38.211+10:00",
-	      "P": "EY60jCbMaCjGZcbAep7v9c_siH7IObPqPfk-1dJ1CNo=",
-	      "X": "AABAAAAAAQAAAAABi8uoI5WB3vqzyqWaxtb29Gk90Il2Ho6x2lUkH3JvVlHGkP8_IVzKTlgg93pDE1FqUX34l2wwSzxlxhccp7NEpfq8T98TeDaBeUVibClcF3eoCTZpnxXIubh1_Cgl9l-t6_ChjoqA-NDJuvLXIXRvF1cEzIV3WUvV"
+	      "CreatedOn": "2016-05-08T17:14:47.775+10:00",
+	      "P": "BW67LiJY1vqZhSny-iPHLok9WMgJJlKQ7M3ggtvBKgo=",
+	      "X": "AABAAAAAAEAAAAABc2ujPzpivoQygjc-PDI3FlV1QqyppCIOi5tFAbCIvXuBMorAC_ZU5PPexPiuOhGm9LXiAZvbXlGZ_mrmH6yNs0yCuIvPQA69TPDMCmOwNyFUHaDhiD67_H_xgkwBPxbCGzOdWfj6XNXNhfNYXHYYaKo2_PwPH-Pt"
 	    }
 	  }
 	}
@@ -44,10 +44,10 @@ signature over the contents which includes public keys, an info affirmation, and
 
 	{
 	  "Version": "Buttermilk Tweet Pepper 1.0",
-	  "KMUHandle": "bc8ecc13-71b2-4c70-99d7-188c1a07453b-T",
+	  "KMUHandle": "dSruIH9reptjSMUggsEjv-T",
 	  "AdminEmail": "dave@cryptoregistry.com",
 	  "Contents": {
-	    "8f3d6826-7bd5-4a1a-976c-3a1fbe6e6a3d-C": {
+	    "MjXndz59kq7Bow1wZwCbP-C": {
 	      "ContactType": "Person",
 	      "GivenName.0": "David",
 	      "FamilyName.0": "Smith",
@@ -56,33 +56,34 @@ signature over the contents which includes public keys, an info affirmation, and
 	      "TwitterHandle": "Chinese_Knees",
 	      "Country": "AU"
 	    },
-	    "869b15cb-91a8-482f-87c5-bed368d093cd-D": {
+	    "6OoEjbI344AGWb9BXWV3kD-D": {
 	      "Copyright": "Copyright 2016 by David R. Smith. All Rights Reserved",
 	      "TermsOfServiceAgreement": "I agree to cryptoregistry.com's Terms of Service",
 	      "InfoAffirmation": "I affirm the information I have entered in this file is valid and correct."
 	    },
-	    "f8dff898-0e78-466b-90d7-ef125aab1d6d-P": {
+	    "11UO37mprBYTu687QaVFha-P": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Boxing",
-	      "CreatedOn": "2016-04-26T07:49:38.179+10:00",
-	      "P": "qxaCCEah63oAOA9fQ1JI5Xi0lQtosv7ujzxpBqA8vVc="
+	      "CreatedOn": "2016-05-08T17:14:47.745+10:00",
+	      "P": "uqTj9dqubWgnkID-XWvrH-4enInYxJBBLwZw2B5zvjU="
 	    },
-	    "74cd46ce-cab9-403c-b3f6-61db1af3b518-P": {
+	    "jHaarE7kJgHj0VuRzpl7Y-P": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Signing",
-	      "CreatedOn": "2016-04-26T07:49:38.211+10:00",
-	      "P": "EY60jCbMaCjGZcbAep7v9c_siH7IObPqPfk-1dJ1CNo="
+	      "CreatedOn": "2016-05-08T17:14:47.775+10:00",
+	      "P": "BW67LiJY1vqZhSny-iPHLok9WMgJJlKQ7M3ggtvBKgo="
 	    },
-	    "8955516b-8368-49c3-ba93-627faab4fdae-S": {
-	      "CreatedOn": "2016-05-05T10:32:10.706+10:00",
+	    "3Sxd7BxmBESuxvjcTRhHLI-S": {
+	      "CreatedOn": "2016-05-08T17:29:45.439+10:00",
 	      "DigestAlgorithm": "CubeHash-256",
-	      "SignedWith": "74cd46ce-cab9-403c-b3f6-61db1af3b518",
+	      "SignedWith": "jHaarE7kJgHj0VuRzpl7Y",
 	      "SignedBy": "Chinese_Knees",
-	      "s": "5SuJf1ttx2W0pSwHeLlaAiV98MZ9IrVIvme-ZX72dHzr1orn7sbvxbsAiCeg7WxFPQobSMAHMYkMI4cVfEWiA7dKsZs_Eivyil4Lr-VPOHSdJV3XVaI_aAmbyxTAJJSn",
-	      "DataRefs": "8955516b-8368-49c3-ba93-627faab4fdae-S:CreatedOn, .SignedBy, .SignedWith, 8f3d6826-7bd5-4a1a-976c-3a1fbe6e6a3d-C:ContactType, .GivenName.0, .FamilyName.0, .Email.0, .MobilePhone.0, .TwitterHandle, .Country, 869b15cb-91a8-482f-87c5-bed368d093cd-D:Copyright, .TermsOfServiceAgreement, .InfoAffirmation, f8dff898-0e78-466b-90d7-ef125aab1d6d-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P, 74cd46ce-cab9-403c-b3f6-61db1af3b518-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P"
+	      "s": "D47bu_6PSu3mSNYhVQfbVv4IfFkRQ1okBfh3fAA5KsHDiEm6i5OQo_VK-B6jf8yL-_3BnkssJFsUDtrr9mK9A5OdBiaL5tGmTwycmxnXQTtbY0atOjzMcAFtmxXTGHzm",
+	      "DataRefs": "3Sxd7BxmBESuxvjcTRhHLI-S:CreatedOn, .SignedBy, .SignedWith, MjXndz59kq7Bow1wZwCbP-C:ContactType, .GivenName.0, .FamilyName.0, .Email.0, .MobilePhone.0, .TwitterHandle, .Country, 6OoEjbI344AGWb9BXWV3kD-D:Copyright, .TermsOfServiceAgreement, .InfoAffirmation, 11UO37mprBYTu687QaVFha-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P, jHaarE7kJgHj0VuRzpl7Y-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P"
 	    }
 	  }
 	}
+
 
 
 ## API Quickstart
@@ -157,16 +158,15 @@ The block type is appended at the end of the name of the block using a dash and 
 Here is a block showing contact information:
 
 	{
-	"8f3d6826-7bd5-4a1a-976c-3a1fbe6e6a3d-C": {
-		      "ContactType": "Person",
-		      "GivenName.0": "David",
-		      "GivenName.1": "Richard",
-		      "FamilyName.0": "Smith",
-		      "Email.0": "dave@cryptoregistry.com",
-		      "MobilePhone.0": "+61449957431",
-		      "TwitterHandle": "Chinese_Knees",
-		      "Country": "AU"
-		}
+	"MjXndz59kq7Bow1wZwCbP-C": {
+	      "ContactType": "Person",
+	      "GivenName.0": "David",
+	      "FamilyName.0": "Smith",
+	      "Email.0": "dave@cryptoregistry.com",
+	      "MobilePhone.0": "+61449957431",
+	      "TwitterHandle": "Chinese_Knees",
+	      "Country": "AU"
+	    }
 	}
 
 In JSON terminology it is an object with one key and a value which is a nested object of String keys and values. Notice that the inner keys take generally a CamelCase form, and if the key is potentially multivariate like the GivenName, then it is
@@ -185,7 +185,8 @@ The KMU class has some methods to assist with basic housekeeping, such as adding
 private key bytes within key blocks, and also finding keys easily.
  
 That's basically all there is to know about KMUs in order to use them. Note that for internal use (when the KMU is 
-never intended to represent published data) then the KMUHandle and AdminEmail are sometimes not required. The KMUHandle is intended to work as a transaction token and the email an automated way to contact someone about that transaction. 
+never intended to represent published data) then the KMUHandle and AdminEmail are sometimes not required. The KMUHandle is intended 
+to work as a transaction token and the email an automated way to contact someone about that transaction. 
  
 ## Digital Signature Support
 
@@ -224,11 +225,11 @@ in the list is from the same block, then the item is allowed to take the short f
 To create a signature block, use an instance of the TweetPepperSigner class. First make some blocks to sign: 
 
 	Block contactInfo = new Block(BlockType.C);
-    	 contactInfo.put("GivenName.0","David");
-    	 contactInfo.put("FamilyName.0","Smith");
+    contactInfo.put("GivenName.0","David");
+    contactInfo.put("FamilyName.0","Smith");
 
 	Block dataBlock = new Block(BlockType.D);
-    	  dataBlock.put("Some data","mydata");
+    dataBlock.put("Some data","mydata");
     	
 	Block pubBoxing = boxingKey.pubBlock();
 	Block pubSigning = signingKey.pubBlock();
@@ -281,7 +282,25 @@ Yes, I'm using an internal JSON package taken from a project by EclipseSource: h
 Normally I would just use Jackson, but I'm trying to economize and Jackson comes at the cost of three jar dependencies,
 with a lot of functionality I don't need here. The EclipseSource code is a mere 15 classes, does everything
 required so far, and won't collide with whatever else you are doing. The other issue was licensing as this is
-a foray into GPL.   
+a foray into GPL.  
+
+## UUIDs and Identifiers
+
+The explicit intention is that a block is universally distinct from any other and can be recalled from
+a database or storage system, such as a registry. To achieve this we use a UUID.
+
+More recently I looked into using a more compact encoding. The [BijectiveEncoder class](https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/url/BijectiveEncoder.java) shrinks the 128 bit UUID value into a 22 byte String. For example:
+
+	{
+	  "a4BdeTMcoVJC2bbwm3hhB-E": {
+	    "S": "76t5L0aodFhNtvELHcBPAI",
+	    "P": "1GihEoZwtM7Bag9zfPypG8",
+	    "Nonce.0": "-J5q78JdRPwFLeoVFaebBSPkqD86wCUn",
+	    "Data.0": "aqc5jLgnCeCRM044lk5UrzGl0-HTD6-APE11wZVBh1tgJOl1uLSZyeUhHQ=="
+	  }
+	}  
+
+S and P are both 128 bit UUIDs to keys elsewhere, and "a4BdeTMcoVJC2bbwm3hhB-E" is the unique identifier for this block. 
 
 ## Encryption schemes
 

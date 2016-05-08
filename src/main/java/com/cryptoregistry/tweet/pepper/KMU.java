@@ -1,7 +1,28 @@
+/*
+Copyright 2016, David R. Smith, All Rights Reserved
+
+This file is part of TweetPepper.
+
+TweetPepper is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+TweetPepper is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 package com.cryptoregistry.tweet.pepper;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +57,13 @@ public class KMU {
 		this.kmuHandle = null;
 		this.adminEmail = null;
 		this.map = new LinkedHashMap<String,Block>();
+	}
+	
+	public KMU(Block...blocks){
+		this();
+		for(Block b: blocks){
+			this.map.put(b.name,b);
+		}
 	}
 	
 	public KMU(String adminEmail) {
@@ -177,6 +205,27 @@ public class KMU {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * merge some other KMU contents into this one (return this). Notices if a key is
+	 * duplicate and does not take it on board
+	 * 
+	 * @param kmu
+	 * @return
+	 */
+	public KMU mergeBlocks(KMU...kmus){
+		for(KMU item: kmus){
+			Iterator<String> iter = item.map.keySet().iterator();
+			while(iter.hasNext()){
+				String key = iter.next();
+				if(this.map.containsKey(key))continue;
+				else{
+					this.map.put(key, item.map.get(key));
+				}
+			}
+		}
+		return this;
 	}
 	
 }

@@ -1,3 +1,23 @@
+/*
+Copyright 2016, David R. Smith, All Rights Reserved
+
+This file is part of TweetPepper.
+
+TweetPepper is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+TweetPepper is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+	
 package com.cryptoregistry.tweet.url;
 
 import java.math.BigInteger;
@@ -9,13 +29,15 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Encode a UUID using Bijective conversion. Produces a 22 character string to encode 128 bits. This
+ * <p>Encode a UUID using Bijective conversion. Produces a 22 character string to encode 128 bits. This
  * is normally two characters shorter than the Base64 format, and 14 characters shorter than a nominal 
- * UUID or GUID string.
+ * UUID or GUID string.</p>
+ * 
+ *<p>The method is of my own design</p>
  * 
  * @author Dave
  */
-public final class BijectiveUUIDEncoder {
+public final class BijectiveEncoder {
 
 	private final List<Integer> digits;
 	private final ByteBuffer bb;
@@ -41,13 +63,13 @@ public final class BijectiveUUIDEncoder {
 		return array;
 	}
 
-	public BijectiveUUIDEncoder() {
+	public BijectiveEncoder() {
 		super();
 		digits = new ArrayList<Integer>();
 		bb = ByteBuffer.wrap(new byte[16]);
 	}
 			
-	public BigInteger getBigIntegerFromUUID(UUID randomUUID) {
+	private BigInteger getBigIntegerFromUUID(UUID randomUUID) {
 		bb.putLong(randomUUID.getMostSignificantBits());
 		bb.putLong(randomUUID.getLeastSignificantBits());
 		BigInteger val = new BigInteger(1,bb.array());
@@ -55,7 +77,7 @@ public final class BijectiveUUIDEncoder {
 		return val;
 	}
 
-	public UUID uuidFromBigInteger(BigInteger bi) {
+	private UUID uuidFromBigInteger(BigInteger bi) {
 		
 		StringBuilder bis = new StringBuilder(bi.toString(16));
 		if(bis.length() < 32) {

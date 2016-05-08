@@ -131,7 +131,7 @@ public class TestIdeas {
 		
 		PBEParams params = new TweetPepper().createPBEParams(); // the default, takes about 10 seconds to run on my laptop
 		Assert.assertTrue(params.N == 16384);
-		Assert.assertTrue(params.r == 256);
+		Assert.assertTrue(params.r == 64);
 		Assert.assertTrue(params.p == 1);
 	}
 	

@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.cryptoregistry.tweet.url.BijectiveUUIDEncoder;
+import com.cryptoregistry.tweet.url.BijectiveEncoder;
 import com.cryptoregistry.tweet.url.ShortID;
 
 public class URLTest {
@@ -24,7 +24,7 @@ public class URLTest {
 	public void test1() {
 		for(int i = 0; i<1000;i++){
 			UUID uuid = UUID.randomUUID();
-			BijectiveUUIDEncoder enc = new BijectiveUUIDEncoder();
+			BijectiveEncoder enc = new BijectiveEncoder();
 			String val = enc.encode(uuid);
 			System.err.println(val);
 			UUID result = enc.decode(val);

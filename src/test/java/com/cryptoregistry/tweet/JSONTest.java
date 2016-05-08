@@ -14,8 +14,8 @@ import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.tweet.pepper.TweetPepper;
-import com.cryptoregistry.tweet.pepper.format.KMUReader;
-import com.cryptoregistry.tweet.pepper.format.KMUWriter;
+import com.cryptoregistry.tweet.pepper.format.KMUInAdapter;
+import com.cryptoregistry.tweet.pepper.format.KMUOutAdapter;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 import com.cryptoregistry.tweet.pepper.sig.TweetPepperSignature;
@@ -38,7 +38,7 @@ public class JSONTest {
 	    	confidential.addBlock(key1.toBlock());
 	    	char [] pass = {'p','a','s','s'};
 	    	confidential.protectKeyBlocks(pass);
-	    	KMUWriter kmuw = new KMUWriter(confidential);
+	    	KMUOutAdapter kmuw = new KMUOutAdapter(confidential);
 	    	StringWriter keys = new StringWriter();
 	    	kmuw.emitKeys(keys);
 	    	Assert.assertNotNull(key0);
@@ -54,7 +54,7 @@ public class JSONTest {
     	BoxingKeyContents bc = null;
     	InputStream in = this.getClass().getResourceAsStream("/keys.json");
     	try (InputStreamReader reader = new InputStreamReader(in)){
-    		KMUReader kmuReader = new KMUReader(reader);
+    		KMUInAdapter kmuReader = new KMUInAdapter(reader);
     		KMU kmu = kmuReader.read();
     		char [] pass = {'p','a','s','s'};
     		kmu.openKeyBlocks(pass);
@@ -93,7 +93,7 @@ public class JSONTest {
       	  TweetPepperSignature sig = signer.sign();
       	  req.addBlock(sig.toBlock());
       	  
-      	  KMUWriter kmur = new KMUWriter(req);
+      	  KMUOutAdapter kmur = new KMUOutAdapter(req);
       	  StringWriter reqWriter = new StringWriter();
       	  kmur.writeTo(reqWriter);
       	  System.err.println(reqWriter.toString());
@@ -104,13 +104,13 @@ public class JSONTest {
     	
     	InputStream in = this.getClass().getResourceAsStream("/keys.json");
     	try (InputStreamReader reader = new InputStreamReader(in)){
-    		KMUReader kmuReader = new KMUReader(reader);
+    		KMUInAdapter kmuReader = new KMUInAdapter(reader);
     		KMU kmu = kmuReader.read();
     		Assert.assertEquals(2, kmu.map.size());
     		Assert.assertNotNull(kmu.map.get("f8dff898-0e78-466b-90d7-ef125aab1d6d-X"));
     		Assert.assertNotNull(kmu.map.get("74cd46ce-cab9-403c-b3f6-61db1af3b518-X"));
     		
-    		KMUWriter kwriter = new KMUWriter(kmu);
+    		KMUOutAdapter kwriter = new KMUOutAdapter(kmu);
          	StringWriter reqWriter = new StringWriter();
          	kwriter.writeTo(reqWriter);
          	String test = reqWriter.toString();
@@ -138,11 +138,11 @@ public class JSONTest {
     public void readKMUTransaction(){
     	InputStream in = this.getClass().getResourceAsStream("/reg-request.json");
     	try (InputStreamReader reader = new InputStreamReader(in)){
-    		KMUReader kmuReader = new KMUReader(reader);
+    		KMUInAdapter kmuReader = new KMUInAdapter(reader);
     		KMU kmu = kmuReader.read();
     		Assert.assertEquals(5, kmu.map.size());
     		
-    		KMUWriter kwriter = new KMUWriter(kmu);
+    		KMUOutAdapter kwriter = new KMUOutAdapter(kmu);
          	StringWriter reqWriter = new StringWriter();
          	kwriter.writeTo(reqWriter);
          	System.err.println(reqWriter.toString());
@@ -157,7 +157,7 @@ public class JSONTest {
     public void readKMUAndValidateSignature(){
     	InputStream in = this.getClass().getResourceAsStream("/reg-request.json");
     	try (InputStreamReader reader = new InputStreamReader(in)){
-    		KMUReader kmuReader = new KMUReader(reader);
+    		KMUInAdapter kmuReader = new KMUInAdapter(reader);
     		KMU kmu = kmuReader.read();
     		TweetPepperVerifier verifier = new TweetPepperVerifier();
     		verifier.addKMUBlocks(kmu);

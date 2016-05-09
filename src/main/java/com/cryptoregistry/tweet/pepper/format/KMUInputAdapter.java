@@ -38,12 +38,12 @@ import com.cryptoregistry.tweet.pepper.KMU;
  * @author Dave
  *
  */
-public class KMUInAdapter {
+public class KMUInputAdapter {
 	
 	private KMU kmu;
 	private final Reader in;
 
-	public KMUInAdapter(Reader in) {
+	public KMUInputAdapter(Reader in) {
 		this.in = in;
 	}
 	

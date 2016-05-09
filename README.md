@@ -117,7 +117,7 @@ Use:
 	confidential.protectKeyBlocks(pass);
 	
 	// 1.4 write out the keys to a StringWriter
-	KMUWriter kmuWriter = new KMUWriter(confidential);
+	KMUOutAdapter kmuWriter = new KMUOutAdapter(confidential);
 	StringWriter keys = new StringWriter();
 	kmuWriter.emitKeys(keys);
  
@@ -250,7 +250,7 @@ Then add these to a KMU to work as a container:
 	container.addBlock(signatureObj.toBlock());
 	      	  
 	// now print out the whole thing
-	KMUWriter k = new KMUWriter(container);
+	KMUOutAdapter k = new KMUOutAdapter(container);
 	StringWriter strWriter = new StringWriter();
 	container.writeTo(strWriter);
 	System.err.println(strWriter.toString());
@@ -267,7 +267,7 @@ public signing key in a -P block, and an -S block to validate:
 ## The Digest Package
 
 DJB has an interesting digest algorithm called CubeHash: https://en.wikipedia.org/wiki/CubeHash. I'm using
-the java implementation from the SAPHIR project. This code works in a slightly different way from bouncycastle's
+the java implementation from the SAPHIR project. This API works in a slightly different way than Bouncycastle's
 Digest classes:
 
 	Digest digest = new CubeHash256(); 
@@ -281,8 +281,8 @@ Yes, I'm using an internal JSON package taken from a project by EclipseSource: h
 
 Normally I would just use Jackson, but I'm trying to economize and Jackson comes at the cost of three jar dependencies,
 with a lot of functionality I don't need here. The EclipseSource code is a mere 15 classes, does everything
-required so far, and won't collide with whatever else you are doing. The other issue was licensing as this is
-a foray into GPL.  
+required so far, and won't collide with whatever else you are doing.
+
 
 ## UUIDs and Identifiers
 

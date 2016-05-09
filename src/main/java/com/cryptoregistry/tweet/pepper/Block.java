@@ -52,7 +52,7 @@ public class Block extends LinkedHashMap<String,String> {
 
 	private static final long serialVersionUID = 1L;
 	
-	public String name;
+	public String name; // canonical name - should be globally unique such as a UUID
 
 	public Block(BlockType type) {
 		super();

@@ -40,11 +40,11 @@ import com.cryptoregistry.tweet.pepper.KMU;
  * @author Dave
  *
  */
-public class KMUOutAdapter {
+public class KMUOutputAdapter {
 
 	final KMU kmu;
 	
-	public KMUOutAdapter(KMU keyMaterialUnit) {
+	public KMUOutputAdapter(KMU keyMaterialUnit) {
 		this.kmu = keyMaterialUnit;
 	}
 	

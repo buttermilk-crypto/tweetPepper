@@ -26,8 +26,8 @@ import com.cryptoregistry.util.TimeUtil;
 
 public class SecretBoxKeyContents {
 
-	TweetKeyMetadata metadata;
-	SecretKey key;
+	public final TweetKeyMetadata metadata;
+	public final SecretKey key;
 	
 	public SecretBoxKeyContents(TweetKeyMetadata metadata, SecretKey key) {
 		super();

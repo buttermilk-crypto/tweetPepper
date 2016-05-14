@@ -20,8 +20,13 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.cryptoregistry.tweet.pepper.format;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import com.cryptoregistry.json.Json;
@@ -46,6 +51,16 @@ public class KMUOutputAdapter {
 	
 	public KMUOutputAdapter(KMU keyMaterialUnit) {
 		this.kmu = keyMaterialUnit;
+	}
+	
+	public void writeTo(File file){
+		try {
+			FileOutputStream out = new FileOutputStream(file);
+			OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+			this.writeTo(writer);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public void writeTo(Writer writer){
@@ -83,6 +98,7 @@ public class KMUOutputAdapter {
 		try {
 			writer.write(output);
 			writer.flush();
+			writer.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -120,6 +136,7 @@ public class KMUOutputAdapter {
 		try {
 			writer.write(output);
 			writer.flush();
+			writer.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

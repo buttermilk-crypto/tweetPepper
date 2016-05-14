@@ -51,6 +51,7 @@ public class KMU {
 	public final String adminEmail; // immediate contact for failures, etc
 	
 	public final Map<String, Block> map; // keys are distinguished-names to the blocks
+	public Map<String,String> aliases;
 	
 	public KMU() {
 		super();
@@ -87,6 +88,13 @@ public class KMU {
 	public KMU addBlock(Block block){
 		map.put(block.toString(), block);
 		return this;
+	}
+	
+	// TODO
+	public void addAlias(String alias, String name){
+		if(aliases == null){
+			
+		}
 	}
 	
 	/**

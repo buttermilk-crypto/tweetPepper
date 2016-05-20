@@ -60,7 +60,7 @@ import com.cryptoregistry.tweet.pepper.Block;
 	  }
 	 }
  
- Larger will be available as a String, just like Smaller. This is due to auto-marshalling of long strings into arrays
+ Larger will be available as a String with get(), just like Smaller. This is due to auto-marshalling of long strings into arrays
  
  * </pre>
  * @author Dave
@@ -98,10 +98,15 @@ public class BlockFormatter {
 		while(biter.hasNext()){
 			String itemKey = biter.next();
 			String itemValue = block.get(itemKey);
-			if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
-				obj.add(itemKey, split(itemValue, 72));
+			// special case
+			if(itemKey.equals("DataRefs")) {
+				obj.add(itemKey, splitByComma(itemValue));
 			}else{
-				obj.add(itemKey, itemValue);
+				if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
+					obj.add(itemKey, split(itemValue, 72));
+				}else{
+					obj.add(itemKey, itemValue);
+				}
 			}
 		}
 		contents.add(block.name, obj);
@@ -150,6 +155,7 @@ public class BlockFormatter {
 		}
 		int lineCount = (input.length() / length);
 		int charCount = 0;
+	
 		for(int i = 0;i<lineCount;i++){
 			int start = charCount;
 			int end = start+length;
@@ -158,7 +164,39 @@ public class BlockFormatter {
 			charCount+=length;
 		}
 		String last = input.substring(charCount, input.length());
-		array.add(last);
+		if(last.length()< 10){
+			// if last is small it looks better to put at end of previous substring
+			array.appendToLast(last);
+		}else array.add(last);
+		return array;
+	}
+	
+	/**
+	 * Split by comma, but preserve the comma itself
+	 * 
+	 * @param input
+	 * @return
+	 */
+	private JsonArray splitByComma(String input){
+		JsonArray array = new JsonArray();
+		if(!input.contains(",")) {
+			array.add(input);
+			return array;
+		}
+		String [] list = input.split("\\,");
+		
+		for(String part: list){
+			StringBuilder builder = new StringBuilder();
+			if(array.size() != list.length-1) {
+				builder.append(part);
+				builder.append(",");
+			}else{
+				// last, no comma required
+				builder.append(part);
+			}
+			array.add(builder.toString());
+		}
+		
 		return array;
 	}
 

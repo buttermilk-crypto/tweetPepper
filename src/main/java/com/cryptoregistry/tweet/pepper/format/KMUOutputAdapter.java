@@ -79,10 +79,15 @@ public class KMUOutputAdapter {
 			while(biter.hasNext()){
 				String itemKey = biter.next();
 				String itemValue = map.get(itemKey);
-				if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
-					obj.add(itemKey, split(itemValue, 72));
+				// special case
+				if(itemKey.equals("DataRefs")) {
+					obj.add(itemKey, splitByComma(itemValue));
 				}else{
-					obj.add(itemKey, itemValue);
+					if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
+						obj.add(itemKey, split(itemValue, 72));
+					}else{
+						obj.add(itemKey, itemValue);
+					}
 				}
 			}
 			contents.add(key, obj);
@@ -108,26 +113,6 @@ public class KMUOutputAdapter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	private JsonArray split(String input, int length){
-		JsonArray array = new JsonArray();
-		if(input.length() <= length) {
-			array.add(input);
-			return array;
-		}
-		int lineCount = (input.length() / length);
-		int charCount = 0;
-		for(int i = 0;i<lineCount;i++){
-			int start = charCount;
-			int end = start+length;
-			String substring = input.substring(start, end);
-			array.add(substring);
-			charCount+=length;
-		}
-		String last = input.substring(charCount, input.length());
-		array.add(last);
-		return array;
 	}
 	
 	/**
@@ -170,6 +155,45 @@ public class KMUOutputAdapter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	private JsonArray split(String input, int length){
+		JsonArray array = new JsonArray();
+		if(input.length() <= length) {
+			array.add(input);
+			return array;
+		}
+		int lineCount = (input.length() / length);
+		int charCount = 0;
+	
+		for(int i = 0;i<lineCount;i++){
+			int start = charCount;
+			int end = start+length;
+			String substring = input.substring(start, end);
+			array.add(substring);
+			charCount+=length;
+		}
+		String last = input.substring(charCount, input.length());
+		if(last.length()< 10){
+			// if last is small it looks better to put at end of previous substring
+			array.appendToLast(last);
+		}else array.add(last);
+		return array;
+	}
+	
+	private JsonArray splitByComma(String input){
+		JsonArray array = new JsonArray();
+		if(!input.contains(",")) {
+			array.add(input);
+			return array;
+		}
+		String [] list = input.split("\\,");
+		
+		for(String part: list){
+			array.add(part);
+		}
+		
+		return array;
 	}
 
 }

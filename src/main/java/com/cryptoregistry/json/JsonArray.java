@@ -423,5 +423,16 @@ public class JsonArray extends JsonValue implements Iterable<JsonValue> {
     JsonArray other = (JsonArray)object;
     return values.equals(other.values);
   }
+  
+  /**
+   * Adds a little to the last item. Used with formatting
+   * 
+   * @param s
+   */
+  public void appendToLast(String s){
+	  JsonValue v = values.remove(values.size()-1);
+	 String last = v.asString();
+	 values.add(new JsonString(last+s));
+  }
 
 }

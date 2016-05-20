@@ -70,8 +70,12 @@ public class KMUInputAdapter {
 						for(String dataKey: dataKeys){
 							JsonValue v = map.get(dataKey);
 							if(v.isArray()){ // auto-marshalling string vs. array
-							JsonArray array = map.get(dataKey).asArray();
-								data.put(dataKey, combine(array));
+								JsonArray array = map.get(dataKey).asArray();
+								if(dataKey.equals("DataRefs")){
+									data.put(dataKey, combineWithCommas(array));
+								}else{
+									data.put(dataKey, combine(array));
+								}
 							}else if(v.isString()){
 								data.put(dataKey, map.get(dataKey).asString());
 							}
@@ -132,6 +136,17 @@ public class KMUInputAdapter {
 		while(iter.hasNext()){
 			b.append(iter.next().asString());
 		}
+		return b.toString();
+	}
+	
+	private String combineWithCommas(JsonArray array){
+		Iterator<JsonValue> iter = array.iterator();
+		StringBuilder b = new StringBuilder();
+		while(iter.hasNext()){
+			b.append(iter.next().asString());
+			b.append(",");
+		}
+		b.deleteCharAt(b.length()-1);
 		return b.toString();
 	}
 

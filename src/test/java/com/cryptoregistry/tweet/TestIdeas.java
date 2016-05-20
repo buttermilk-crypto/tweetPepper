@@ -13,6 +13,7 @@ import com.cryptoregistry.tweet.pbe.PBE;
 import com.cryptoregistry.tweet.pbe.PBEParams;
 import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.TweetPepper;
+import com.cryptoregistry.tweet.pepper.format.BlockFormatter;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 import com.cryptoregistry.tweet.salt.TweetNaCl;
@@ -178,7 +179,7 @@ public class TestIdeas {
 		String result = tp.decrypt(theirs, mine, block);
 		Assert.assertEquals(msg, result);
 		
-		System.err.println(Block.toJSON(block));
+		System.err.println(new BlockFormatter(block,true).toJSON());
 		
 	}
 	

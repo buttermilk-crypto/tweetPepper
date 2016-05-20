@@ -30,7 +30,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import com.cryptoregistry.json.Json;
+import com.cryptoregistry.json.JsonArray;
 import com.cryptoregistry.json.JsonObject;
+import com.cryptoregistry.json.JsonValue;
 import com.cryptoregistry.json.WriterConfig;
 import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.KMU;
@@ -77,7 +79,11 @@ public class KMUOutputAdapter {
 			while(biter.hasNext()){
 				String itemKey = biter.next();
 				String itemValue = map.get(itemKey);
-				obj.add(itemKey, itemValue);
+				if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
+					obj.add(itemKey, split(itemValue, 72));
+				}else{
+					obj.add(itemKey, itemValue);
+				}
 			}
 			contents.add(key, obj);
 		}
@@ -104,6 +110,26 @@ public class KMUOutputAdapter {
 		}
 	}
 	
+	private JsonArray split(String input, int length){
+		JsonArray array = new JsonArray();
+		if(input.length() <= length) {
+			array.add(input);
+			return array;
+		}
+		int lineCount = (input.length() / length);
+		int charCount = 0;
+		for(int i = 0;i<lineCount;i++){
+			int start = charCount;
+			int end = start+length;
+			String substring = input.substring(start, end);
+			array.add(substring);
+			charCount+=length;
+		}
+		String last = input.substring(charCount, input.length());
+		array.add(last);
+		return array;
+	}
+	
 	/**
 	 * Writes only the keys from a given KMU. This is to easily segregate out local contents
 	 * 
@@ -124,7 +150,11 @@ public class KMUOutputAdapter {
 				while(biter.hasNext()){
 					String itemKey = biter.next();
 					String itemValue = map.get(itemKey);
-					obj.add(itemKey, itemValue);
+					if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
+						obj.add(itemKey, split(itemValue, 72));
+					}else{
+						obj.add(itemKey, itemValue);
+					}
 				}
 				contents.add(key, obj);
 			}

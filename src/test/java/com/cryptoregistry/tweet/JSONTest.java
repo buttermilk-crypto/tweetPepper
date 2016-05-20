@@ -14,6 +14,7 @@ import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.tweet.pepper.TweetPepper;
+import com.cryptoregistry.tweet.pepper.format.BlockFormatter;
 import com.cryptoregistry.tweet.pepper.format.KMUInputAdapter;
 import com.cryptoregistry.tweet.pepper.format.KMUOutputAdapter;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
@@ -27,6 +28,20 @@ public class JSONTest {
 	@BeforeClass
 	public static void warning() {
 		System.err.println("These tests take some time to run. Don't be alarmed.");
+	}
+	
+	@Test
+	public void testBlockFormatting() {
+		Block block = new Block(BlockType.D);
+		block.put("Small", "a small value");
+		block.put("Larger", "1111111111111111111111111111111111111112222222222222222222222222222222222222222222222223333333333333333333333333333333333444444444444444444444444444444444444555555555555555555555555555555555555666666666666666666666666666666666666666666");
+		
+		BlockFormatter bf = new BlockFormatter(block);
+		bf.setPretty(true);
+		String s = bf.toJSON();
+		System.err.println(s);
+		Block output = bf.fromJSON();
+		Assert.assertTrue(output.equals(block));
 	}
 	
 	 @Test

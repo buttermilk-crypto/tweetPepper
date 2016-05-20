@@ -22,9 +22,11 @@ package com.cryptoregistry.tweet.pepper.format;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Iterator;
 import java.util.List;
 
 import com.cryptoregistry.json.Json;
+import com.cryptoregistry.json.JsonArray;
 import com.cryptoregistry.json.JsonObject;
 import com.cryptoregistry.json.JsonValue;
 import com.cryptoregistry.tweet.pepper.Block;
@@ -32,8 +34,8 @@ import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.tweet.pepper.KMU;
 
 /**
- * Read the various blocks found in a JSON file and build a KMU or "Key Material Unit." A KMU is logically
- * similar in function to a key store but has more flexibility (e.g., can contain arbitrary data, contacts, etc).
+ * Read a JSON file and build a KMU or "Key Material Unit" object. A KMU is logically similar in function 
+ * to a key store but has more flexibility (e.g., can contain arbitrary data, contacts, etc).
  * 
  * @author Dave
  *
@@ -66,7 +68,13 @@ public class KMUInputAdapter {
 						Block data = new Block(name);
 						List<String> dataKeys = map.names();
 						for(String dataKey: dataKeys){
-							data.put(dataKey, map.get(dataKey).asString());
+							JsonValue v = map.get(dataKey);
+							if(v.isArray()){ // auto-marshalling string vs. array
+							JsonArray array = map.get(dataKey).asArray();
+								data.put(dataKey, combine(array));
+							}else if(v.isString()){
+								data.put(dataKey, map.get(dataKey).asString());
+							}
 						}
 						kmu.addBlock(data);
 					}
@@ -91,7 +99,13 @@ public class KMUInputAdapter {
 						Block data = new Block(name);
 						List<String> dataKeys = map.names();
 						for(String dataKey: dataKeys){
-							data.put(dataKey, map.get(dataKey).asString());
+							JsonValue v = map.get(dataKey);
+							if(v.isArray()){ // auto-marshalling string vs. array
+							JsonArray array = map.get(dataKey).asArray();
+								data.put(dataKey, combine(array));
+							}else if(v.isString()){
+								data.put(dataKey, map.get(dataKey).asString());
+							}
 						}
 						kmu.addBlock(data);
 					}
@@ -110,7 +124,15 @@ public class KMUInputAdapter {
 		}
 		
 		return kmu;
-		
+	}
+	
+	private String combine(JsonArray array){
+		Iterator<JsonValue> iter = array.iterator();
+		StringBuilder b = new StringBuilder();
+		while(iter.hasNext()){
+			b.append(iter.next().asString());
+		}
+		return b.toString();
 	}
 
 }

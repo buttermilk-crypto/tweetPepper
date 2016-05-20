@@ -31,6 +31,7 @@ import java.util.UUID;
 import com.cryptoregistry.tweet.pbe.PBE;
 import com.cryptoregistry.tweet.pbe.PBEParams;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
+import com.cryptoregistry.tweet.pepper.key.BoxingKeyForPublication;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
@@ -210,6 +211,20 @@ public class KMU {
 				if(b.containsKey("KeyUsage")&&b.get("KeyUsage").equals("Boxing")) {
 					// found a signing key
 					return new BoxingKeyContents(b);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public BoxingKeyForPublication getBoxingPubKey(){
+		for(String s: map.keySet()){
+			Block b = map.get(s);
+			if(b.name.endsWith("-P")){
+				if(b.containsKey("KeyUsage")&&b.get("KeyUsage").equals("Boxing")) {
+					// found a signing key
+					return new BoxingKeyForPublication(b);
 				}
 			}
 		}

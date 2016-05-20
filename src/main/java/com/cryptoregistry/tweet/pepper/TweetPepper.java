@@ -204,6 +204,36 @@ public final class TweetPepper {
 
 		return block;
 	}
+	
+	/**
+	 * This is a basic TweetNaCL authenticated encryption using the crypto_box function. Emit a block of type E.
+	 * This is best suited to smaller payloads. 
+	 * 
+	 * @param receiverPublicBoxingKey
+	 * @param senderSecretBoxingKey
+	 * @param in
+	 * @return a Block of type E
+	 */
+	public Block encryptBytes(
+			BoxingKeyForPublication receiverPublicBoxingKey,
+			BoxingKeyContents senderSecretBoxingKey, 
+			byte [] in) {
+		Block block = new Block(BlockType.E);
+		byte[] nonce = new byte[TweetNaCl.BOX_NONCE_BYTES];
+		rand.nextBytes(nonce);
+		byte[] enc = salt.crypto_box(in,
+				nonce, 
+				receiverPublicBoxingKey.publicKey.getBytes(),
+				senderSecretBoxingKey.secretBoxingKey.getBytes());
+
+		block.put("S", senderSecretBoxingKey.metadata.handle);
+		block.put("P", receiverPublicBoxingKey.metadata.handle);
+		Encoder encoder = Base64.getUrlEncoder();
+		block.put("Nonce.0", encoder.encodeToString(nonce));
+		block.put("Data.0", encoder.encodeToString(enc));
+
+		return block;
+	}
 
 	/**
 	 * Used to unbox the above 
@@ -234,6 +264,37 @@ public final class TweetPepper {
 				receiverSecretBoxingKey.secretBoxingKey.getBytes());
 
 		return new String(msg, StandardCharsets.UTF_8);
+	}
+	
+	/**
+	 * Used to unbox the above 
+	 * 
+	 * @param receiverSecretBoxingKey
+	 * @param senderPublicBoxingKey
+	 * @param block
+	 * @return a raw byte array
+	 */
+	public byte [] decryptToBytes(
+			BoxingKeyContents receiverSecretBoxingKey,
+			BoxingKeyForPublication senderPublicBoxingKey, 
+			Block block) {
+
+		if (!block.get("S").equals(senderPublicBoxingKey.metadata.handle)) {
+			throw new RuntimeException("looks like wrong key, expecting: "
+					+ block.get("S"));
+		}
+		if (!block.get("P").equals(receiverSecretBoxingKey.metadata.handle)) {
+			throw new RuntimeException("looks like wrong key, expecting: "
+					+ block.get("P"));
+		}
+
+		Decoder decoder = Base64.getUrlDecoder();
+		byte[] msg = salt.crypto_box_open(decoder.decode(block.get("Data.0")),
+				decoder.decode(block.get("Nonce.0")),
+				senderPublicBoxingKey.publicKey.getBytes(),
+				receiverSecretBoxingKey.secretBoxingKey.getBytes());
+
+		return msg;
 	}
 
 	/**

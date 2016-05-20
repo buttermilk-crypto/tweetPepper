@@ -51,7 +51,6 @@ class JsonString extends JsonValue {
     return string;
   }
 
-  @Override
   public int hashCode() {
     return string.hashCode();
   }

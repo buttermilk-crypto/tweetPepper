@@ -23,7 +23,6 @@ package com.cryptoregistry.json;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -31,44 +30,6 @@ import java.util.List;
 
 import com.cryptoregistry.json.JsonObject.Member;
 
-
-/**
- * Represents a JSON object, a set of name/value pairs, where the names are strings and the values
- * are JSON values.
- * <p>
- * Members can be added using the <code>add(String, ...)</code> methods which accept instances of
- * {@link JsonValue}, strings, primitive numbers, and boolean values. To modify certain values of an
- * object, use the <code>set(String, ...)</code> methods. Please note that the <code>add</code>
- * methods are faster than <code>set</code> as they do not search for existing members. On the other
- * hand, the <code>add</code> methods do not prevent adding multiple members with the same name.
- * Duplicate names are discouraged but not prohibited by JSON.
- * </p>
- * <p>
- * Members can be accessed by their name using {@link #get(String)}. A list of all names can be
- * obtained from the method {@link #names()}. This class also supports iterating over the members in
- * document order using an {@link #iterator()} or an enhanced for loop:
- * </p>
- * <pre>
- * for (Member member : jsonObject) {
- *   String name = member.getName();
- *   JsonValue value = member.getValue();
- *   ...
- * }
- * </pre>
- * <p>
- * Even though JSON objects are unordered by definition, instances of this class preserve the order
- * of members to allow processing in document order and to guarantee a predictable output.
- * </p>
- * <p>
- * Note that this class is <strong>not thread-safe</strong>. If multiple threads access a
- * <code>JsonObject</code> instance concurrently, while at least one of these threads modifies the
- * contents of this object, access to the instance must be synchronized externally. Failure to do so
- * may lead to an inconsistent state.
- * </p>
- * <p>
- * This class is <strong>not supposed to be extended</strong> by clients.
- * </p>
- */
 @SuppressWarnings("serial") // use default serial UID
 public class JsonObject extends JsonValue implements Iterable<Member> {
 
@@ -108,47 +69,6 @@ public class JsonObject extends JsonValue implements Iterable<Member> {
     }
     table = new HashIndexTable();
     updateHashIndex();
-  }
-
-  /**
-   * Reads a JSON object from the given reader.
-   * <p>
-   * Characters are read in chunks and buffered internally, therefore wrapping an existing reader in
-   * an additional <code>BufferedReader</code> does <strong>not</strong> improve reading
-   * performance.
-   * </p>
-   *
-   * @param reader
-   *          the reader to read the JSON object from
-   * @return the JSON object that has been read
-   * @throws IOException
-   *           if an I/O error occurs in the reader
-   * @throws ParseException
-   *           if the input is not valid JSON
-   * @throws UnsupportedOperationException
-   *           if the input does not contain a JSON object
-   * @deprecated Use {@link Json#parse(Reader)}{@link JsonValue#asObject() .asObject()} instead
-   */
-  @Deprecated
-  public static JsonObject readFrom(Reader reader) throws IOException {
-    return JsonValue.readFrom(reader).asObject();
-  }
-
-  /**
-   * Reads a JSON object from the given string.
-   *
-   * @param string
-   *          the string that contains the JSON object
-   * @return the JSON object that has been read
-   * @throws ParseException
-   *           if the input is not valid JSON
-   * @throws UnsupportedOperationException
-   *           if the input does not contain a JSON object
-   * @deprecated Use {@link Json#parse(String)}{@link JsonValue#asObject() .asObject()} instead
-   */
-  @Deprecated
-  public static JsonObject readFrom(String string) {
-    return JsonValue.readFrom(string).asObject();
   }
 
   /**

@@ -43,10 +43,15 @@ public class PBE {
 
 	private final PBEParams params;
 
+	/**
+	 * Used with protect()
+	 * 
+	 * @param params
+	 */
 	public PBE(PBEParams params) {
 		super();
 		this.params = params;
-		if(this.params.N == 0 || this.params.r == 0 || this.params.p == 0) throw new RuntimeException("Invalid Scrypt predicates");
+		if(this.params.N == 0 || this.params.r == 0 || this.params.p == 0) throw new RuntimeException("Invalid SCrypt predicates");
 	}
 
 	/**
@@ -57,6 +62,14 @@ public class PBE {
 		this.params = null;
 	}
 
+	/**
+	 * Protect some bytes using our SCrypt/SecretBox algorithm. password is zeroed out as a side-effect. 
+	 * 
+	 * @param password
+	 * @param confidentialBytes
+	 * @return a String, the Base64url encoded bytes prepended with a header containing the parameters
+	 * 
+	 */
 	public String protect(char[] password, byte[] confidentialBytes) {
 		if (params == null) throw new RuntimeException("Need to set params in constructor first before this call.");
 		if (password == null) throw new RuntimeException("Password cannot be null.");
@@ -68,9 +81,11 @@ public class PBE {
 			byte[] derived = SCrypt.scrypt(toBytes(password),
 					params.scryptSalt, params.N, params.r, params.p, 32);
 			
-			doubt.writeInt(params.N);
-			doubt.writeInt(params.r);
-			doubt.writeInt(params.p);
+			doubt.writeByte((byte)'t');
+			doubt.writeByte((byte)'p');
+			doubt.writeShort(params.N); // 2 bytes
+			doubt.writeShort(params.r); // 2 bytes
+			doubt.writeShort(params.p);  // 2 bytes
 			doubt.write(params.scryptSalt); // 16 bytes
 			doubt.write(params.nonce); // 24 bytes
 			
@@ -87,6 +102,13 @@ public class PBE {
 		}
 	}
 
+	/**
+	 * decrypt our protected bytes and return them. password is zeroed out as a side effect of this method 
+	 * 
+	 * @param password
+	 * @param protectedString
+	 * @return the confidential bytes
+	 */
 	public byte [] unprotect(char[] password, String protectedString) {
 
 		TweetNaCl salt = new TweetNaCl();
@@ -95,14 +117,19 @@ public class PBE {
 			byte[] packed = Base64.getUrlDecoder().decode(protectedString);
 			ByteArrayInputStream bin = new ByteArrayInputStream(packed);
 			DataInputStream in = new DataInputStream(bin);
-			int N = in.readInt();
-			int r = in.readInt();
-			int p = in.readInt();
+			char first = (char)in.readByte();
+			char second = (char)in.readByte();
+			if(!(first == 't' && second == 'p')){
+				throw new RuntimeException("Magic does not match: "+first+""+second+"input is not encoded as expected");
+			}
+			int N = in.readShort();
+			int r = in.readShort();
+			int p = in.readShort();
 			byte [] scryptSalt = new byte[16];
 			in.readFully(scryptSalt);
 			byte [] nonce = new byte[TweetNaCl.BOX_NONCE_BYTES];
 			in.readFully(nonce);
-			byte [] enc = new byte[packed.length -(4+4+4+16+TweetNaCl.BOX_NONCE_BYTES)];
+			byte [] enc = new byte[packed.length - (2+2+2+2+16+TweetNaCl.BOX_NONCE_BYTES)];
 			in.readFully(enc);
 			
 			// the pbe key

@@ -198,7 +198,7 @@ public final class BlockFormatter {
 			b.append(iter.next().asString());
 			b.append(", ");
 		}
-		b.delete(b.length() - 3, b.length() - 1);
+		b.delete(b.length() - 2, b.length());
 		return b.toString();
 	}
 

@@ -128,12 +128,6 @@ public class TweetPepperVerifier {
 		
 	//	System.err.println(scope);
 		
-		// 1.5.0 - digesting. The first items are always the signature's CreatedOn, SignedBy and SignedWith fields
-		// this is now done as part of the loop below
-	//	digest.update(signatureDateOfRecord.getBytes(StandardCharsets.UTF_8));
-	//	digest.update(signedBy.getBytes(StandardCharsets.UTF_8));
-	//	digest.update(signedWith.getBytes(StandardCharsets.UTF_8));
-		
 		// 1.5.1 - run a loop on the data ref list. The token items will be normalized in the pass.
 		// find the data items and digest in order
 		

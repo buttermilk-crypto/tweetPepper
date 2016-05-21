@@ -3,7 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cryptoregistry</groupId>
 	<artifactId>tweetpepper</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
 
 	<dependencies>
 
@@ -36,14 +37,113 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<show>private</show>
+					<nohelp>true</nohelp>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
-
 	</build>
+
+	<url>https://www.cryptoregistry.com/</url>
+	<licenses>
+		<license>
+			<name> GNU GENERAL PUBLIC LICENSE, v3</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<inceptionYear>2016</inceptionYear>
+	<organization>
+		<name>David R. Smith</name>
+		<url>https://www.cryptoregistry.com/</url>
+	</organization>
+	<scm>
+		<connection>scm:git:git://github.com/buttermilk-crypto/tweetPepper.git</connection>
+		<developerConnection>scm:git:git://github.com/buttermilk-crypto/tweetPepper.git</developerConnection>
+		<url>https://github.com/buttermilk-crypto</url>
+	</scm>
+	<developers>
+		<developer>
+			<id>1</id>
+			<name>David R. Smith</name>
+			<email>dave@cryptoregistry.com</email>
+		</developer>
+	</developers>
+
+	<issueManagement>
+		<url>https://github.com/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
 
 	<properties>
 		<junit.version>4.8.2</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+			<!--  needed to get my inadequate comments to parse in Java 1.8 javadoc -->
+		<additionalparam>-Xdoclint:none</additionalparam>
 	</properties>
 
 

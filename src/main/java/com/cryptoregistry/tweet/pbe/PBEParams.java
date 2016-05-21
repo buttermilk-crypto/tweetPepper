@@ -20,10 +20,23 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.cryptoregistry.tweet.pbe;
 
-/**
+
+/**<p>
  * These are predicates to the key derivation function and secret box encryption of the private key.
- * We need to serialize these along with the encryption as they are required for reconstitution 
- * of the encrypted string
+ * We need to serialize these as a header along with the encrypted bytes, required to reconstitute
+ * the encrypted string. The embedded header format is not the one used with com.lambdaworks.
+ * </p>
+ * 
+ * <table>
+ * <tr><th>Bytes</th><th>Meaning</th></tr>
+ * <tr><td>2</td><td>'t' followed by 'p', the magic</td></tr>
+ * <tr><td>2</td><td>N</td></tr>
+ * <tr><td>2</td><td>r</td></tr>
+ * <tr><td>2</td><td>p</td></tr>
+ * <tr><td>16</td><td>scrypt salt</td></tr>
+ * <tr><td>TweetNaCl.BOX_NONCE_BYTES</td><td>SecretBox nonce</td></tr>
+ * 
+ * </table>
  * 
  * @author Dave
  *
@@ -34,6 +47,15 @@ public class PBEParams {
 	public final byte [] nonce;
 	public final int N, r, p;
 	
+	/**
+	 * Set n, r, and p. Note that scryptSalt and nonce must never be reused.
+	 * 
+	 * @param scryptSalt
+	 * @param nonce
+	 * @param n
+	 * @param r
+	 * @param p
+	 */
 	public PBEParams(byte[] scryptSalt, byte[] nonce, int n, int r, int p) {
 		super();
 		this.scryptSalt = scryptSalt;
@@ -43,7 +65,12 @@ public class PBEParams {
 		this.p = p;
 	}
 	
-	// the settings I use locally
+	/**
+	 * use defaults for N, p, and r, note that the input parameters must never be re-used
+	 * 
+	 * @param scryptSalt
+	 * @param nonce
+	 */
 	public PBEParams(byte[] scryptSalt, byte[] nonce) {
 		super();
 		this.scryptSalt = scryptSalt;

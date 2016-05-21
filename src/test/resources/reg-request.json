@@ -1,9 +1,9 @@
 {
   "Version": "Buttermilk Tweet Pepper 1.0",
-  "KMUHandle": "dSruIH9reptjSMUggsEjv-T",
+  "KMUHandle": "5fAC3UdTDgbFA1sZ65R0pH-T",
   "AdminEmail": "dave@cryptoregistry.com",
   "Contents": {
-    "MjXndz59kq7Bow1wZwCbP-C": {
+    "3NB3h7MksqYPtFdZP3CPb1-C": {
       "ContactType": "Person",
       "GivenName.0": "David",
       "FamilyName.0": "Smith",
@@ -12,30 +12,57 @@
       "TwitterHandle": "Chinese_Knees",
       "Country": "AU"
     },
-    "6OoEjbI344AGWb9BXWV3kD-D": {
+    "3fupgTUJQldeYTceMErS90-D": {
       "Copyright": "Copyright 2016 by David R. Smith. All Rights Reserved",
       "TermsOfServiceAgreement": "I agree to cryptoregistry.com's Terms of Service",
-      "InfoAffirmation": "I affirm the information I have entered in this file is valid and correct."
+      "InfoAffirmation": [
+        "I affirm the information I have entered in this file is valid and correct."
+      ]
     },
-    "11UO37mprBYTu687QaVFha-P": {
+    "3yW9H8jgN5yN5DoF4pCEFt-P": {
       "KeyAlgorithm": "TweetNaCl",
       "KeyUsage": "Boxing",
-      "CreatedOn": "2016-05-08T17:14:47.745+10:00",
-      "P": "uqTj9dqubWgnkID-XWvrH-4enInYxJBBLwZw2B5zvjU="
+      "CreatedOn": "2016-05-22T09:13:17.894+10:00",
+      "P": "nH26f2KYi-HXg3cJB6DhcjiPTY37U4hFLcNkbAGCvUg="
     },
-    "jHaarE7kJgHj0VuRzpl7Y-P": {
+    "2f18cpRAuoL5BKR0swGXaJ-P": {
       "KeyAlgorithm": "TweetNaCl",
       "KeyUsage": "Signing",
-      "CreatedOn": "2016-05-08T17:14:47.775+10:00",
-      "P": "BW67LiJY1vqZhSny-iPHLok9WMgJJlKQ7M3ggtvBKgo="
+      "CreatedOn": "2016-05-22T09:13:17.932+10:00",
+      "P": "ST04RKE8S8gVXwIz2MljBofEL_dDObHUD1ZgZWrTLUc="
     },
-    "3Sxd7BxmBESuxvjcTRhHLI-S": {
-      "CreatedOn": "2016-05-08T17:29:45.439+10:00",
+    "2hWJbTc8sdI0oEQNBk6j30-S": {
+      "CreatedOn": "2016-05-22T09:30:47.802+10:00",
       "DigestAlgorithm": "CubeHash-256",
-      "SignedWith": "jHaarE7kJgHj0VuRzpl7Y",
+      "SignedWith": "2f18cpRAuoL5BKR0swGXaJ",
       "SignedBy": "Chinese_Knees",
-      "s": "D47bu_6PSu3mSNYhVQfbVv4IfFkRQ1okBfh3fAA5KsHDiEm6i5OQo_VK-B6jf8yL-_3BnkssJFsUDtrr9mK9A5OdBiaL5tGmTwycmxnXQTtbY0atOjzMcAFtmxXTGHzm",
-      "DataRefs": "3Sxd7BxmBESuxvjcTRhHLI-S:CreatedOn, .SignedBy, .SignedWith, MjXndz59kq7Bow1wZwCbP-C:ContactType, .GivenName.0, .FamilyName.0, .Email.0, .MobilePhone.0, .TwitterHandle, .Country, 6OoEjbI344AGWb9BXWV3kD-D:Copyright, .TermsOfServiceAgreement, .InfoAffirmation, 11UO37mprBYTu687QaVFha-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P, jHaarE7kJgHj0VuRzpl7Y-P:KeyAlgorithm, .KeyUsage, .CreatedOn, .P"
+      "s": [
+        "Gr2twpavHWI2UbqH8rnCawUL8gt8ZpZqSpjbOsJ7JGaRmJLBMPOlkdFalzqdnBRuWGSbKsdw",
+        "FAFNmhwvGHTwBVMqL0tZm9oxSVRlPNMNW5zifmRFcmvISr-W6KlqOQ0B"
+      ],
+      "DataRefs": [
+        "2hWJbTc8sdI0oEQNBk6j30-S:CreatedOn",
+        ".SignedBy",
+        ".SignedWith",
+        "3NB3h7MksqYPtFdZP3CPb1-C:ContactType",
+        ".GivenName.0",
+        ".FamilyName.0",
+        ".Email.0",
+        ".MobilePhone.0",
+        ".TwitterHandle",
+        ".Country",
+        "3fupgTUJQldeYTceMErS90-D:Copyright",
+        ".TermsOfServiceAgreement",
+        ".InfoAffirmation",
+        "3yW9H8jgN5yN5DoF4pCEFt-P:KeyAlgorithm",
+        ".KeyUsage",
+        ".CreatedOn",
+        ".P",
+        "2f18cpRAuoL5BKR0swGXaJ-P:KeyAlgorithm",
+        ".KeyUsage",
+        ".CreatedOn",
+        ".P"
+      ]
     }
   }
 }

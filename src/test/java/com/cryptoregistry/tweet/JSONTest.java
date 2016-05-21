@@ -30,6 +30,7 @@ public class JSONTest {
 		System.err.println("These tests take some time to run. Don't be alarmed.");
 	}
 	
+	
 	@Test
 	public void testBlockFormatting() {
 		Block block = new Block(BlockType.D);
@@ -129,15 +130,15 @@ public class JSONTest {
     		KMUInputAdapter kmuReader = new KMUInputAdapter(reader);
     		KMU kmu = kmuReader.read();
     		Assert.assertEquals(2, kmu.map.size());
-    		Assert.assertNotNull(kmu.map.get("11UO37mprBYTu687QaVFha-X"));
-    		Assert.assertNotNull(kmu.map.get("jHaarE7kJgHj0VuRzpl7Y-X"));
+    		Assert.assertNotNull(kmu.map.get("3yW9H8jgN5yN5DoF4pCEFt-X"));
+    		Assert.assertNotNull(kmu.map.get("2f18cpRAuoL5BKR0swGXaJ-X"));
     		
     		KMUOutputAdapter kwriter = new KMUOutputAdapter(kmu);
          	StringWriter reqWriter = new StringWriter();
          	kwriter.emitKeys(reqWriter);
          	String test = reqWriter.toString();
-         	Assert.assertTrue(test.contains("11UO37mprBYTu687QaVFha-X"));
-         	Assert.assertTrue(test.contains("jHaarE7kJgHj0VuRzpl7Y-X"));
+         	Assert.assertTrue(test.contains("3yW9H8jgN5yN5DoF4pCEFt-X"));
+         	Assert.assertTrue(test.contains("2f18cpRAuoL5BKR0swGXaJ-X"));
     		
     		
     		char [] pass = {'p','a','s','s'};
@@ -189,4 +190,6 @@ public class JSONTest {
 			e.printStackTrace();
 		}
     }
+    
+    
 }

@@ -31,7 +31,7 @@ import java.util.UUID;
 /**
  * <p>Encode a UUID using Bijective conversion. Produces a 22 character string to encode 128 bits. This
  * is normally two characters shorter than the Base64 format, and 14 characters shorter than a nominal 
- * UUID or GUID string.</p>
+ * UUID or GUID string which is hex encoded.</p>
  * 
  *<p>The method is of my own design</p>
  * 

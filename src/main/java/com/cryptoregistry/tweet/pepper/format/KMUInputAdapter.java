@@ -22,11 +22,10 @@ package com.cryptoregistry.tweet.pepper.format;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Iterator;
+
 import java.util.List;
 
 import com.cryptoregistry.json.Json;
-import com.cryptoregistry.json.JsonArray;
 import com.cryptoregistry.json.JsonObject;
 import com.cryptoregistry.json.JsonValue;
 import com.cryptoregistry.tweet.pepper.Block;
@@ -35,7 +34,8 @@ import com.cryptoregistry.tweet.pepper.KMU;
 
 /**
  * Read a JSON file and build a KMU or "Key Material Unit" object. A KMU is logically similar in function 
- * to a key store but has more flexibility (e.g., can contain arbitrary data, contacts, etc).
+ * to a key store but has more flexibility (e.g., can contain arbitrary data, contacts, etc). It is more like a
+ * message in some ways and less like a data store, which is what a key store reminds me of.
  * 
  * @author Dave
  *
@@ -44,9 +44,11 @@ public class KMUInputAdapter {
 	
 	private KMU kmu;
 	private final Reader in;
+	private final BlockFormatter bf;
 
 	public KMUInputAdapter(Reader in) {
 		this.in = in;
+		bf = new BlockFormatter();
 	}
 	
 	public KMU read(){
@@ -58,30 +60,10 @@ public class KMUInputAdapter {
 			switch(version){
 				case "Buttermilk Tweet Pepper Keys 1.0": {
 					kmu = new KMU();
-					// we expect an arbitrary number of keys (-X) or -U as the Contents but  other 
-					// types are ok if required
+					// we expect an arbitrary number of keys (-X) or -U as the Contents but other 
+					// types are not omitted if exist
 					JsonObject contents = obj.get("Contents").asObject();
-					List<String> names = contents.names();
-					for(String name: names){
-						JsonValue keyValue = contents.get(name);
-						JsonObject map = keyValue.asObject();
-						Block data = new Block(name);
-						List<String> dataKeys = map.names();
-						for(String dataKey: dataKeys){
-							JsonValue v = map.get(dataKey);
-							if(v.isArray()){ // auto-marshalling string vs. array
-								JsonArray array = map.get(dataKey).asArray();
-								if(dataKey.equals("DataRefs")){
-									data.put(dataKey, combineWithCommas(array));
-								}else{
-									data.put(dataKey, combine(array));
-								}
-							}else if(v.isString()){
-								data.put(dataKey, map.get(dataKey).asString());
-							}
-						}
-						kmu.addBlock(data);
-					}
+					kmu.addBlocks(bf.fromJsonObject(contents).getBlocks());
 					
 					break;
 				}
@@ -92,28 +74,14 @@ public class KMUInputAdapter {
 					String AdminEmail = obj.get("AdminEmail").asString();
 					kmu = new KMU(KMUHandle,AdminEmail);
 					JsonObject contents = obj.get("Contents").asObject();
-					List<String> names = contents.names();
-					for(String name: names){
-						BlockType type = BlockType.fromFlag(name.substring(name.length()-2, name.length()));
-						// prevent confidential types here
+					List<Block> list = bf.fromJsonObject(contents).getBlocks();
+					// validate no confidential types found in export format, fail if we find one
+					for(Block block: list){
+						BlockType type = block.getBlockType();
 						if(type == BlockType.X || type == BlockType.U) 
-							throw new RuntimeException("Illegal type in Export Format file: "+type);
-						JsonValue keyValue = contents.get(name);
-						JsonObject map = keyValue.asObject();
-						Block data = new Block(name);
-						List<String> dataKeys = map.names();
-						for(String dataKey: dataKeys){
-							JsonValue v = map.get(dataKey);
-							if(v.isArray()){ // auto-marshalling string vs. array
-							JsonArray array = map.get(dataKey).asArray();
-								data.put(dataKey, combine(array));
-							}else if(v.isString()){
-								data.put(dataKey, map.get(dataKey).asString());
-							}
-						}
-						kmu.addBlock(data);
+							throw new RuntimeException("Illegal type in Export Formatted file: "+type);
 					}
-					
+					kmu.addBlocks(list);
 					break;
 				}
 				case "Buttermilk Key Materials 1.0" : {
@@ -128,26 +96,6 @@ public class KMUInputAdapter {
 		}
 		
 		return kmu;
-	}
-	
-	private String combine(JsonArray array){
-		Iterator<JsonValue> iter = array.iterator();
-		StringBuilder b = new StringBuilder();
-		while(iter.hasNext()){
-			b.append(iter.next().asString());
-		}
-		return b.toString();
-	}
-	
-	private String combineWithCommas(JsonArray array){
-		Iterator<JsonValue> iter = array.iterator();
-		StringBuilder b = new StringBuilder();
-		while(iter.hasNext()){
-			b.append(iter.next().asString());
-			b.append(",");
-		}
-		b.deleteCharAt(b.length()-1);
-		return b.toString();
 	}
 
 }

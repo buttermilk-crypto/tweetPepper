@@ -30,11 +30,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import com.cryptoregistry.json.Json;
-import com.cryptoregistry.json.JsonArray;
 import com.cryptoregistry.json.JsonObject;
-import com.cryptoregistry.json.JsonValue;
 import com.cryptoregistry.json.WriterConfig;
 import com.cryptoregistry.tweet.pepper.Block;
+import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.tweet.pepper.KMU;
 
 
@@ -67,31 +66,18 @@ public class KMUOutputAdapter {
 	
 	public void writeTo(Writer writer){
 		
-		//Contents object
-		JsonObject contents = new JsonObject();
-		
+		BlockFormatter bf = new BlockFormatter();
 		Iterator<String> iter = kmu.map.keySet().iterator();
 		while(iter.hasNext()){
 			String key = iter.next(); // distinguished name
-			Block map = kmu.map.get(key);
-			JsonObject obj = new JsonObject();
-			Iterator<String> biter = map.keySet().iterator();
-			while(biter.hasNext()){
-				String itemKey = biter.next();
-				String itemValue = map.get(itemKey);
-				// special case
-				if(itemKey.equals("DataRefs")) {
-					obj.add(itemKey, splitByComma(itemValue));
-				}else{
-					if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
-						obj.add(itemKey, split(itemValue, 72));
-					}else{
-						obj.add(itemKey, itemValue);
-					}
-				}
-			}
-			contents.add(key, obj);
+			Block block = kmu.map.get(key);
+			BlockType type = block.getBlockType();
+			if(type == BlockType.X || type == BlockType.U) 
+				throw new RuntimeException("Illegal type in Export Formatted file: "+type);
+			bf.addBlock(block);
 		}
+		
+		JsonObject contents = bf.toJsonObject();
 		
 		String output = null;
 		if(kmu.version.equals(KMU.transactionVersion)){
@@ -122,28 +108,18 @@ public class KMUOutputAdapter {
 	 */
 	public void emitKeys(Writer writer){
 		
-		//Contents object
-		JsonObject contents = new JsonObject();
-		
+		BlockFormatter bf = new BlockFormatter();
 		Iterator<String> iter = kmu.map.keySet().iterator();
 		while(iter.hasNext()){
 			String key = iter.next(); // distinguished name
-			if(key.endsWith("-U")||key.endsWith("-X")){ 
-				Block map = kmu.map.get(key);
-				JsonObject obj = new JsonObject();
-				Iterator<String> biter = map.keySet().iterator();
-				while(biter.hasNext()){
-					String itemKey = biter.next();
-					String itemValue = map.get(itemKey);
-					if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
-						obj.add(itemKey, split(itemValue, 72));
-					}else{
-						obj.add(itemKey, itemValue);
-					}
-				}
-				contents.add(key, obj);
-			}
+			Block block = kmu.map.get(key);
+			BlockType type = block.getBlockType();
+			// add only the keys
+			if(!(type == BlockType.X || type == BlockType.U)) continue;
+			bf.addBlock(block);
 		}
+		
+		JsonObject contents = bf.toJsonObject();
 		
 		String output = Json.object()
 		.add("Version", KMU.confidentialKeyVersion)
@@ -155,45 +131,6 @@ public class KMUOutputAdapter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	private JsonArray split(String input, int length){
-		JsonArray array = new JsonArray();
-		if(input.length() <= length) {
-			array.add(input);
-			return array;
-		}
-		int lineCount = (input.length() / length);
-		int charCount = 0;
-	
-		for(int i = 0;i<lineCount;i++){
-			int start = charCount;
-			int end = start+length;
-			String substring = input.substring(start, end);
-			array.add(substring);
-			charCount+=length;
-		}
-		String last = input.substring(charCount, input.length());
-		if(last.length()< 10){
-			// if last is small it looks better to put at end of previous substring
-			array.appendToLast(last);
-		}else array.add(last);
-		return array;
-	}
-	
-	private JsonArray splitByComma(String input){
-		JsonArray array = new JsonArray();
-		if(!input.contains(",")) {
-			array.add(input);
-			return array;
-		}
-		String [] list = input.split("\\,");
-		
-		for(String part: list){
-			array.add(part);
-		}
-		
-		return array;
 	}
 
 }

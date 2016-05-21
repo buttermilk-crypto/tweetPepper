@@ -179,7 +179,7 @@ public class TestIdeas {
 		String result = tp.decrypt(theirs, mine, block);
 		Assert.assertEquals(msg, result);
 		
-		System.err.println(new BlockFormatter(block,true).toJSON());
+		System.err.println(new BlockFormatter(block).buildJSON().getJson());
 		
 	}
 	

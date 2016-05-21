@@ -91,6 +91,11 @@ public class KMU {
 		return this;
 	}
 	
+	public KMU addBlocks(List<Block> blocks){
+		for(Block block: blocks) map.put(block.toString(), block);
+		return this;
+	}
+	
 	// TODO
 	public void addAlias(String alias, String name){
 		if(aliases == null){

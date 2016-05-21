@@ -1,10 +1,10 @@
 package com.cryptoregistry.tweet;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -35,13 +35,20 @@ public class JSONTest {
 		Block block = new Block(BlockType.D);
 		block.put("Small", "a small value");
 		block.put("Larger", "1111111111111111111111111111111111111112222222222222222222222222222222222222222222222223333333333333333333333333333333333444444444444444444444444444444444444555555555555555555555555555555555555666666666666666666666666666666666666666666");
+
+		BoxingKeyContents key0 = new TweetPepper().generateBoxingKeys();
+		Block keyBlock = key0.toBlock();
 		
-		BlockFormatter bf = new BlockFormatter(block);
-		bf.setPretty(true);
-		String s = bf.toJSON();
-		System.err.println(s);
-		Block output = bf.fromJSON();
-		Assert.assertTrue(output.equals(block));
+		BlockFormatter bf = new BlockFormatter();
+		bf.addBlock(block)
+			.addBlock(keyBlock);
+		String json = bf.buildJSON().getJson();
+		
+		// round trip
+		bf = new BlockFormatter(json);
+		List<Block> outBlocks = bf.buildBlocks().getBlocks();
+		Assert.assertTrue(block.equals(outBlocks.get(0)));
+		Assert.assertTrue(keyBlock.equals(outBlocks.get(1)));
 	}
 	
 	 @Test
@@ -127,7 +134,7 @@ public class JSONTest {
     		
     		KMUOutputAdapter kwriter = new KMUOutputAdapter(kmu);
          	StringWriter reqWriter = new StringWriter();
-         	kwriter.writeTo(reqWriter);
+         	kwriter.emitKeys(reqWriter);
          	String test = reqWriter.toString();
          	Assert.assertTrue(test.contains("11UO37mprBYTu687QaVFha-X"));
          	Assert.assertTrue(test.contains("jHaarE7kJgHj0VuRzpl7Y-X"));

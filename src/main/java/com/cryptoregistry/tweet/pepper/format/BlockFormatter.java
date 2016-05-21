@@ -20,6 +20,7 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.cryptoregistry.tweet.pepper.format;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,173 +32,228 @@ import com.cryptoregistry.json.WriterConfig;
 import com.cryptoregistry.tweet.pepper.Block;
 
 /**
- *<pre>
- 
-  Format an individual block into json or json to a block. 
-  
-  		Block block = new Block(BlockType.D);
-		block.put("Small", "a small value");
-		block.put("Larger", "111...6666");
-		
-		BlockFormatter bf = new BlockFormatter(block);
-		bf.setPretty(true);
-		String s = bf.toJSON();
-		System.err.println(s);
-		Block output = bf.fromJSON();
-		Assert.assertTrue(output.equals(block));
-  
-  Has output data block:
-  
-	 {
-	  "2AhnH4zdjDfRPYVimZr8eL-D": {
-	    "Small": "a small value",
-	    "Larger": [
-	      "111111111111111111111111111111111111111222222222222222222222222222222222",
-	      "222222222222222333333333333333333333333333333333344444444444444444444444",
-	      "444444444444455555555555555555555555555555555555566666666666666666666666",
-	      "6666666666666666666"
-	    ]
-	  }
-	 }
- 
- Larger will be available as a String with get(), just like Smaller. This is due to auto-marshalling of long strings into arrays
- 
- * </pre>
+ * Two-way transform blocks-to-json or vice-versa. The is parsing and formatting the "Contents" part of a KMU
+ * 
  * @author Dave
  *
  */
-public class BlockFormatter {
+public final class BlockFormatter {
 
-	private Block block;
+	private List<Block> blocks;
 	private String json;
 	private boolean pretty;
 	
+	public BlockFormatter() {
+		blocks = new ArrayList<Block>();
+		pretty = true;
+	}
+
 	public BlockFormatter(Block block) {
-		this.block = block;
+		this();
+		blocks.add(block);
 	}
-	
-	public BlockFormatter(Block block, boolean pretty) {
-		this.block = block;
-		this.pretty = pretty;
+
+	public BlockFormatter(Block[] input) {
+		this();
+		for (Block b : input) {
+			this.blocks.add(b);
+		}
 	}
-	
+
 	public BlockFormatter(String json) {
+		this();
 		this.json = json;
 	}
-	
-	public void setPretty(boolean makePretty){
-		pretty= makePretty;
+
+	public BlockFormatter setPretty(boolean makePretty) {
+		pretty = makePretty;
+		return this;
 	}
-	
-    public String toJSON()  {
-    	if(block == null) throw new RuntimeException("use the Block constructor first");
+
+	public BlockFormatter addBlock(Block block) {
+		blocks.add(block);
+		return this;
+	}
+
+	public Block getBlock(int index) {
+		return blocks.get(index);
+	}
+
+	public JsonObject toJsonObject() {
+		if (blocks.size() == 0)
+			throw new RuntimeException("use the Block constructor first");
+		// root object
 		JsonObject contents = new JsonObject();
-		
-		JsonObject obj = new JsonObject();
-		Iterator<String> biter = block.keySet().iterator();
-		while(biter.hasNext()){
-			String itemKey = biter.next();
-			String itemValue = block.get(itemKey);
-			// special case
-			if(itemKey.equals("DataRefs")) {
-				obj.add(itemKey, splitByComma(itemValue));
-			}else{
-				if(itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH){
-					obj.add(itemKey, split(itemValue, 72));
-				}else{
-					obj.add(itemKey, itemValue);
+		for (Block block : blocks) {
+			JsonObject obj = new JsonObject();
+			Iterator<String> biter = block.keySet().iterator();
+			while (biter.hasNext()) {
+				String itemKey = biter.next();
+				String itemValue = block.get(itemKey);
+				// special case
+				if (itemKey.equals("DataRefs")) {
+					obj.add(itemKey, splitByComma(itemValue));
+				} else {
+					if (itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH) {
+						obj.add(itemKey, split(itemValue, 72));
+					} else {
+						obj.add(itemKey, itemValue);
+					}
 				}
 			}
+			contents.add(block.name, obj);
 		}
-		contents.add(block.name, obj);
-		if(pretty) json = contents.toString(WriterConfig.PRETTY_PRINT);
-		else json = contents.toString(WriterConfig.MINIMAL);
-		return json;
+
+		return contents;
 	}
-	
-	public Block fromJSON(){
-		if(json == null) throw new RuntimeException("use the String constructor first");
+
+	public BlockFormatter buildJSON() {
+
+		JsonObject contents = toJsonObject();
+		if (pretty)
+			json = contents.toString(WriterConfig.PRETTY_PRINT);
+		else
+			json = contents.toString(WriterConfig.MINIMAL);
+		return this;
+	}
+
+	public BlockFormatter buildBlocks() {
+		if (json == null)
+			throw new RuntimeException("use the String constructor first");
+		blocks.clear();
 		JsonValue root = Json.parse(json);
 		JsonObject obj = root.asObject();
-		List<String> names = obj.names();
-		//should be only one
-		if(names.size() != 1) throw new RuntimeException("Should be only one block here, found "+names.size());
-		String dname = names.get(0);
-		block = new Block(dname);
-		JsonValue map = obj.get(dname);
-		JsonObject blk = map.asObject();
-		for(String dataKey: blk.names()){
+
+		List<String> names = obj.names(); // list of dnames
+
+		for (String dname : names) {
+
+			Block block = new Block(dname);
+			JsonValue map = obj.get(dname);
+			JsonObject blk = map.asObject();
+			for (String dataKey : blk.names()) {
 				JsonValue v = blk.get(dataKey);
-				if(v.isArray()){ // auto-marshalling string vs. array
-				JsonArray array = blk.get(dataKey).asArray();
-					block.put(dataKey, combine(array));
-				}else if(v.isString()){
+				if (v.isArray()) { // auto-marshalling string vs. array
+					JsonArray array = blk.get(dataKey).asArray();
+					if (dataKey.equals("DataRefs")) {
+						block.put(dataKey, combineCommaDelimited(array));
+					} else {
+						block.put(dataKey, combine(array));
+					}
+				} else if (v.isString()) {
 					block.put(dataKey, blk.get(dataKey).asString());
 				}
+			}
+
+			blocks.add(block);
 		}
-		return block;
+		
+		return this;
 	}
-	
-	private String combine(JsonArray array){
+
+	public BlockFormatter fromJsonObject(JsonObject obj) {
+
+		blocks.clear();
+		List<String> names = obj.names(); // list of dnames
+
+		for (String dname : names) {
+
+			Block block = new Block(dname);
+			JsonValue map = obj.get(dname);
+			JsonObject blk = map.asObject();
+			for (String dataKey : blk.names()) {
+				JsonValue v = blk.get(dataKey);
+				if (v.isArray()) { // auto-marshalling string vs. array
+					JsonArray array = blk.get(dataKey).asArray();
+					if (dataKey.equals("DataRefs")) {
+						block.put(dataKey, combineCommaDelimited(array));
+					} else {
+						block.put(dataKey, combine(array));
+					}
+				} else if (v.isString()) {
+					block.put(dataKey, blk.get(dataKey).asString());
+				}
+			}
+
+			blocks.add(block);
+		}
+		
+		return this;
+
+	}
+
+	private String combine(JsonArray array) {
 		Iterator<JsonValue> iter = array.iterator();
 		StringBuilder b = new StringBuilder();
-		while(iter.hasNext()){
+		while (iter.hasNext()) {
 			b.append(iter.next().asString());
 		}
 		return b.toString();
 	}
-	
-	private JsonArray split(String input, int length){
+
+	private String combineCommaDelimited(JsonArray array) {
+		Iterator<JsonValue> iter = array.iterator();
+		StringBuilder b = new StringBuilder();
+		while (iter.hasNext()) {
+			b.append(iter.next().asString());
+			b.append(", ");
+		}
+		b.delete(b.length() - 3, b.length() - 1);
+		return b.toString();
+	}
+
+	private JsonArray split(String input, int length) {
 		JsonArray array = new JsonArray();
-		if(input.length() <= length) {
+		if (input.length() <= length) {
 			array.add(input);
 			return array;
 		}
 		int lineCount = (input.length() / length);
 		int charCount = 0;
-	
-		for(int i = 0;i<lineCount;i++){
+
+		for (int i = 0; i < lineCount; i++) {
 			int start = charCount;
-			int end = start+length;
+			int end = start + length;
 			String substring = input.substring(start, end);
 			array.add(substring);
-			charCount+=length;
+			charCount += length;
 		}
 		String last = input.substring(charCount, input.length());
-		if(last.length()< 10){
-			// if last is small it looks better to put at end of previous substring
+		if (last.length() < 10) {
+			// if last is small it looks better to put at end of previous
+			// substring
 			array.appendToLast(last);
-		}else array.add(last);
+		} else
+			array.add(last);
 		return array;
 	}
-	
+
 	/**
-	 * Split by comma, but preserve the comma itself
+	 * Split by comma, this is used for DataRefs
 	 * 
 	 * @param input
 	 * @return
 	 */
-	private JsonArray splitByComma(String input){
+	private JsonArray splitByComma(String input) {
 		JsonArray array = new JsonArray();
-		if(!input.contains(",")) {
+		if (!input.contains(",")) {
 			array.add(input);
 			return array;
 		}
-		String [] list = input.split("\\,");
-		
-		for(String part: list){
-			StringBuilder builder = new StringBuilder();
-			if(array.size() != list.length-1) {
-				builder.append(part);
-				builder.append(",");
-			}else{
-				// last, no comma required
-				builder.append(part);
-			}
-			array.add(builder.toString());
+		String[] list = input.split("\\,");
+
+		for (String part : list) {
+			array.add(part.trim());
 		}
-		
+
 		return array;
 	}
 
+	public List<Block> getBlocks() {
+		return blocks;
+	}
+
+	public String getJson() {
+		return json;
+	}
 }

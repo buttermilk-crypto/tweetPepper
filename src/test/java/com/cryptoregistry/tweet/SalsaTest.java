@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.TweetPepper;
+import com.cryptoregistry.tweet.pepper.format.BlockFormatter;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.salt.TweetNaCl;
 import com.cryptoregistry.tweet.salt.stream.Salsa20;
@@ -94,9 +95,8 @@ public class SalsaTest {
 		// the tweet pepper compiled class
 		InputStream in = this.getClass().getResourceAsStream("/com/cryptoregistry/tweet/salt/TweetNaCl.class");
 		Block block = tp.encryptSalsa20(receiver, sender, in);
-		for(String key: block.keySet()){
-			System.err.println(key+": "+block.get(key));
-		}
+		BlockFormatter bf = new BlockFormatter(block);
+		System.err.println(bf.buildJSON().getJson());
 		
 		InputStream result = tp.decryptSalsa20(receiver, sender, block);
 		ByteArrayInputStream bin = (ByteArrayInputStream) result;

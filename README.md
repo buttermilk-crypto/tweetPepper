@@ -1,60 +1,71 @@
 # buttermilk tweetPepper
 
-tweetPepper provides support for things like key formats, protecting keys, and also has some ideas
-about how to distribute keys via contemporary techniques like social media. 
+Built on the nucleus of TweetNaCl, TweetPepper provides contemporary key formats,  key protection 
+using SCrypt/SecretBox, digital signature support scheme featuring CubeHash, key encapsulation using 
+Salsa20, and other useful features you probably want anyway in a micro-cryptography kit.
 
-This project was originally forked from https://github.com/ianopolous/tweetnacl-java/ which provided
-the nucleus for the rest of the code. Because that fork was GPL'd I cannot include it in buttermilk.
-
+This project was originally forked from https://github.com/ianopolous/tweetnacl-java/. Because that fork was 
+GPL'd I cannot include it in buttermilk, which is licensed Apache 2.0 FOSS.
+ 
 See https://tweetnacl.cr.yp.to/ and https://nacl.cr.yp.to/ for details about "salt".
 
 Bernstein et. al. present the big ideas here: https://tweetnacl.cr.yp.to/tweetnacl-20140917.pdf.
 
 So, they can have the big ideas, I'm happy with that. I am working on a small idea, which is that a 
-crypto library is not much use without a PKI to support it. 
+crypto library is not much use without a PKI to support it.  
 
-## Motivating the idea
+## Motivating the small idea
 
-Here's what some boxing and signing keys look like serialized to JSON (think key stores, PKCS#12, and PKCS#8):
+ASN.1 encodings are dead, or should be. There has been only one meaningful challenge to PKIX, that
+is PGP, and high time for some new ideas. But what would a new PKI look like? How would the formats
+be encoded?  
+
+I think of TweetPepper as a "micro-library." It is not trying to be all things to all people. But it
+represents some of the basic ideas in the context of DJB's suite of cryptography. 
+
+Here's what some boxing and signing keys look like serialized to JSON (think replacement for java key stores, PKCS#12, and PKCS#8):
 
 	{
 	  "Version": "Buttermilk Tweet Pepper Keys 1.0",
 	  "Contents": {
-	    "1t7ZRgQZ2HZh4pPMtAkm0r-X": {
+	    "3yW9H8jgN5yN5DoF4pCEFt-X": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Boxing",
-	      "CreatedOn": "2016-05-21T16:56:01.281+10:00",
-	      "P": "4vFQtyzCGyr_D3zJBildDwz8IA4MPZ1wHIZnaBWGvTw=",
+	      "CreatedOn": "2016-05-22T09:13:17.894+10:00",
+	      "P": "nH26f2KYi-HXg3cJB6DhcjiPTY37U4hFLcNkbAGCvUg=",
 	      "X": [
-	        "AABAAAAAAEAAAAABX5H2oYKuvI6ZqVSJMekVn2fOV28kTMwngKCvsSlOwlJCbrCoCOyrEnJU",
-	        "K3OK3pBw8grm8Tb9pxzQRI9ORE8wQ3qeSqrAU18R9eYK-yBGHdMmTH_XdrWzeg=="
+	        "dHBAAABAAAF9M4ZQoAGcZrAiZOu_4lZo34VOexJqw2p2MJAjBVnHfAQQZKk9Qwt9hpA3kSTN",
+	        "0Rev3V_7mOFIHggGCdfOJbLJKWS6Ja49sdJ-1168S7ImjAp75F1qj0Xi"
 	      ]
 	    },
-	    "7jtaI9pres81h4HgUexa1X-X": {
+	    "2f18cpRAuoL5BKR0swGXaJ-X": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Signing",
-	      "CreatedOn": "2016-05-21T16:56:01.313+10:00",
-	      "P": "KteGS6tx4tpvPHh626jo9u_ScEm19Wro7yDCK3HqvaQ=",
+	      "CreatedOn": "2016-05-22T09:13:17.932+10:00",
+	      "P": "ST04RKE8S8gVXwIz2MljBofEL_dDObHUD1ZgZWrTLUc=",
 	      "X": [
-	        "AABAAAAAAEAAAAAB5j-QZt7pv7QiwE511KU5krozi-UkHWjx5V64DLxuuxc7qHOQB85tiiV2",
-	        "Oc1wi0rqeL_eygxtr2Y_KiMWTMlE0IqCN13izT77EAC-kEp_dIqthqs9SFigCDqXTnWidY4V",
-	        "jJFNbVbHn6aGLXs6zgP7jPzp9-5YWRC1"
+	        "dHBAAABAAAFcBQHxXQmvOl9H5mzG5_08ITFSG-VNji1hHkZjPLhtCeKqN5ZLguUxsM6-bg3P",
+	        "gk1hsTqIVyisNRM3zV1fvXKKCDRnBg5SlIEMF24185lmvlzIXt2dGMByWGwnVwyO5UbLpbrL",
+	        "vj5Z-Mc_qtin4X_8is4nZz_xOXc="
 	      ]
 	    }
 	  }
 	}
 
-This protection format is intended to remain local to the secret keeper (i.e., is not for key publication).
+This protection format is intended to remain local to the secret keeper (i.e., is not for key publication). "X" is a
+password-protected encryption block using SecretBox and SCrypt for the KDF. Keys are generated in pairs for boxing (encryption)
+and signing purposes. 
 
-Here's what an item intended for publication might look like. This is for, e.g., a web service call. It contains a verifiable
-signature over the contents which includes public keys, an info affirmation, and contact info. Think replacement for X-509.
+Here's what a message intended for publication might look like. This is for, e.g., a web service call. It contains a verifiable
+signature over the contents which includes public keys, an info affirmation, and a contact info section. It contains the
+public portion of the above keys. Think replacement for X-509.
 
 	{
 	  "Version": "Buttermilk Tweet Pepper 1.0",
-	  "KMUHandle": "7gJtQnjNERQNebdEEk7xeL-T",
+	  "KMUHandle": "5fAC3UdTDgbFA1sZ65R0pH-T",
 	  "AdminEmail": "dave@cryptoregistry.com",
 	  "Contents": {
-	    "6yaIlNE8VFTAstk8cnUUEH-C": {
+	    "3NB3h7MksqYPtFdZP3CPb1-C": {
 	      "ContactType": "Person",
 	      "GivenName.0": "David",
 	      "FamilyName.0": "Smith",
@@ -63,53 +74,53 @@ signature over the contents which includes public keys, an info affirmation, and
 	      "TwitterHandle": "Chinese_Knees",
 	      "Country": "AU"
 	    },
-	    "1ZzlDWdVVo7zuSKQoyP46p-D": {
+	    "3fupgTUJQldeYTceMErS90-D": {
 	      "Copyright": "Copyright 2016 by David R. Smith. All Rights Reserved",
 	      "TermsOfServiceAgreement": "I agree to cryptoregistry.com's Terms of Service",
 	      "InfoAffirmation": [
 	        "I affirm the information I have entered in this file is valid and correct."
 	      ]
 	    },
-	    "11UO37mprBYTu687QaVFha-P": {
+	    "3yW9H8jgN5yN5DoF4pCEFt-P": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Boxing",
-	      "CreatedOn": "2016-05-08T17:14:47.745+10:00",
-	      "P": "uqTj9dqubWgnkID-XWvrH-4enInYxJBBLwZw2B5zvjU="
+	      "CreatedOn": "2016-05-22T09:13:17.894+10:00",
+	      "P": "nH26f2KYi-HXg3cJB6DhcjiPTY37U4hFLcNkbAGCvUg="
 	    },
-	    "jHaarE7kJgHj0VuRzpl7Y-P": {
+	    "2f18cpRAuoL5BKR0swGXaJ-P": {
 	      "KeyAlgorithm": "TweetNaCl",
 	      "KeyUsage": "Signing",
-	      "CreatedOn": "2016-05-08T17:14:47.775+10:00",
-	      "P": "BW67LiJY1vqZhSny-iPHLok9WMgJJlKQ7M3ggtvBKgo="
+	      "CreatedOn": "2016-05-22T09:13:17.932+10:00",
+	      "P": "ST04RKE8S8gVXwIz2MljBofEL_dDObHUD1ZgZWrTLUc="
 	    },
-	    "2I3VcpTq9b8OCoQGdbH2Bq-S": {
-	      "CreatedOn": "2016-05-21T16:54:10.246+10:00",
+	    "2hWJbTc8sdI0oEQNBk6j30-S": {
+	      "CreatedOn": "2016-05-22T09:30:47.802+10:00",
 	      "DigestAlgorithm": "CubeHash-256",
-	      "SignedWith": "jHaarE7kJgHj0VuRzpl7Y",
+	      "SignedWith": "2f18cpRAuoL5BKR0swGXaJ",
 	      "SignedBy": "Chinese_Knees",
 	      "s": [
-	        "lUJhizrvYypNceMO0QrGWN7pFXqhNWNiac98C6TtY0SVD2zYPj86hIXJFhn4zepQBOlIuKq0",
-	        "FEitfd2i4jveBHXCMsgJinuY7gxd-1-NkaVSDVgN2mhLD8mvy4vHceJR"
+	        "Gr2twpavHWI2UbqH8rnCawUL8gt8ZpZqSpjbOsJ7JGaRmJLBMPOlkdFalzqdnBRuWGSbKsdw",
+	        "FAFNmhwvGHTwBVMqL0tZm9oxSVRlPNMNW5zifmRFcmvISr-W6KlqOQ0B"
 	      ],
 	      "DataRefs": [
-	        "2I3VcpTq9b8OCoQGdbH2Bq-S:CreatedOn",
+	        "2hWJbTc8sdI0oEQNBk6j30-S:CreatedOn",
 	        ".SignedBy",
 	        ".SignedWith",
-	        "6yaIlNE8VFTAstk8cnUUEH-C:ContactType",
+	        "3NB3h7MksqYPtFdZP3CPb1-C:ContactType",
 	        ".GivenName.0",
 	        ".FamilyName.0",
 	        ".Email.0",
 	        ".MobilePhone.0",
 	        ".TwitterHandle",
 	        ".Country",
-	        "1ZzlDWdVVo7zuSKQoyP46p-D:Copyright",
+	        "3fupgTUJQldeYTceMErS90-D:Copyright",
 	        ".TermsOfServiceAgreement",
 	        ".InfoAffirmation",
-	        "11UO37mprBYTu687QaVFha-P:KeyAlgorithm",
+	        "3yW9H8jgN5yN5DoF4pCEFt-P:KeyAlgorithm",
 	        ".KeyUsage",
 	        ".CreatedOn",
 	        ".P",
-	        "jHaarE7kJgHj0VuRzpl7Y-P:KeyAlgorithm",
+	        "2f18cpRAuoL5BKR0swGXaJ-P:KeyAlgorithm",
 	        ".KeyUsage",
 	        ".CreatedOn",
 	        ".P"
@@ -119,21 +130,18 @@ signature over the contents which includes public keys, an info affirmation, and
 	}
 
 
-
 ## API Quickstart
 
 The TweetSalt core class. This has been reworked form the fork to be more usable: thread-safe, object-oriented, and also 
 formatted for my Java programmer eyes. A lot of people might be interested just in this class, so here is the
-direct link: 
-
-https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/salt/TweetNaCl.java
+[direct link](https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/salt/TweetNaCl.java)
 
 The methods are still named as in the project we forked from.
 
 But I encourage you to look a bit further: TweetPepper provides higher level API with a class wrapping the "salt" core
 and augments it with methods for other things you probably want to do with cryptography anyway.
 
-Use: 
+Key Generation: 
 
 	// 1.0 key generation, nice to have boxing and signing keys in a set
 	TweetPepper tp = new TweetPepper();
@@ -160,11 +168,11 @@ Example output is two blocks of type "X" as seen above on this page.
 
 ## Key Classes
 
-The implementation contains a nice class hierarchy for keys to give structure to the raw DJB keys. The chief benefit is strong typing to represent the keys which otherwise would be merely byte arrays, as well as a place to hang metadata. 
+The implementation contains a nice class hierarchy for keys to give structure to the raw DJB keys. The chief benefit is strong typing to represent the keys which otherwise would be merely byte arrays, as well as a place to hang meta-data. 
 
-All keys contain at least some metadata, which currently is the date and time of key generation, the block type, and the key usage (boxing, signing, or secretbox).
+All keys contain at least some meta-data, which currently is the date and time of key generation, the block type, and the key usage (boxing, signing, or secretbox).
  
-Have a browse of https://github.com/buttermilk-crypto/tweetnacl-java/tree/master/src/main/java/com/cryptoregistry/tweet/pepper/key
+Have a browse of the [keys package] (https://github.com/buttermilk-crypto/tweetnacl-java/tree/master/src/main/java/com/cryptoregistry/tweet/pepper/key).
 
 ## Blocks and KMUs
 
@@ -225,8 +233,8 @@ to work as a transaction token and the email an automated way to contact someone
  
 ## Digital Signature Support
 
-The current scheme includes the technique of digitally signing arbitrary blocks and then validating the signature
-at some later date. The signature is detached in it's own block, which has been formatted for clarity:
+The current scheme includes a technique of my own design for digitally signing arbitrary blocks and then validating the signature
+at some later date. The signature is detached in its own block:
 
 	{
 		"5k9ARQlRStGXu8if0z4vUW-S": {
@@ -266,19 +274,19 @@ at some later date. The signature is detached in it's own block, which has been 
 	
 The block is of type -S, for signature.
 
-The CreatedOn date/time is encoded in full ISO 8601 format. 
+The CreatedOn date/time is encoded in full ISO 8601 format.
 
 The DigestAlgorithm is currently one of CubeHash-224, CubeHash-256, CubeHash-384, or CubeHash-512.
 
-The SignedWith field indicates the signing key's block name. Note that it does not include the block type. 
+The SignedWith field indicates the signing key's block name. Note that it does not include the block type as keys have several possible types. 
 
 The SignedBy field is in this implementation the Twitter handle of the secret keeper for the signing key. 
 
 The "s" field contains the signature bytes themselves in Base64url encoded format.
 
 The DataRefs field is a list of the signed items in digest order. The items are in a distinguished form: the
-full UUID and block type of the block the item is in, plus the key for the value. However, if the next item
-in the list is from the same block, then the item is allowed to take the short form <dot><key>.  
+full UUID and block type of the block the item is in, a colon, then the key for the value. If the next item
+in the list is from the same block, then the item is allowed to take the short form of <dot><key>.  
 
 To create a signature block, use an instance of the TweetPepperSigner class. First make some blocks to sign: 
 
@@ -358,18 +366,20 @@ More recently I looked into using a more compact encoding. The [BijectiveEncoder
 	  }
 	}  
 
-S and P are both 128 bit UUIDs to keys elsewhere, and "a4BdeTMcoVJC2bbwm3hhB-E" is the unique identifier for this block. 
+S and P are both 128 bit UUIDs referencing keys elsewhere, and "a4BdeTMcoVJC2bbwm3hhB-E" is the unique identifier for this block. 
+
+TweetPepper contains methods to convert from a UUID Type 3 format into my bijective format, and back again. 
 
 ## Encryption schemes
 
-There are several different informal schemes available for different use-cases:
+There are several different informal encryption schemes on offer in TweetPepper, each for a different use-case:
 
-  + Use Secret Box. This is a simple approach for local use.
+  + Use Secret Box. This is a simple approach for local use and storage.
   + Use SCrypt + Secret Box. This is the right approach if the key is to be based on a password.
   + Use authenticated encryption based on the crypto_box function. This is for Diffie-Hellman type situations.
   + Use authenticated encryption+key encapsulation through a crypto_box/Salsa20 combination.
   
-The SCrypt implementation is one of the few jar dependencies as TweetNaCl does not contain a KDF. I could have opted for the bouncycastle implementation but I have chosen to use the one from com.lambdaworks instead: https://github.com/wg/scrypt
+The SCrypt implementation is one of the few jar dependencies as TweetNaCl does not contain a KDF. I could have opted for the BouncyCastle pure java implementation but I have chosen to use the one from [com.lambdaworks](https://github.com/wg/scrypt) instead.
 
 Here's a direct example:
 
@@ -427,10 +437,61 @@ The output of the toJSON() utility method looks something like this:
 	  }
 	}
 
-S and P are the names of the blocks which provide the keys required to decrypt. 
+S and P are the names of the blocks which provide the keys required to decrypt. "S" is the "sender" or the "secure"
+key while P is the receiver's public key. Multiple Nonce and Data items can be placed into a single block
+if required. 
 
+The crypto_box/Salsa20 combination is a fast and efficient way to handle encryption:
 
+	Block block = tp.encryptSalsa20(receiver, sender, in);
+	InputStream result = tp.decryptSalsa20(receiver, sender, block);
+	
+Here's a complete example:
+	
+	TweetPepper tp = new TweetPepper();
+	BoxingKeyContents sender = tp.generateBoxingKeys();
+	BoxingKeyContents receiver = tp.generateBoxingKeys();
 		
+		// the tweet pepper compiled class
+	InputStream in = this.getClass().getResourceAsStream(
+		   "/com/cryptoregistry/tweet/salt/TweetNaCl.class");
+		   
+	Block block = tp.encryptSalsa20(receiver, sender, in);
+		
+	InputStream result = tp.decryptSalsa20(receiver, sender, block);
+	ByteArrayInputStream bin = (ByteArrayInputStream) result;
+	ByteArrayOutputStream out = new ByteArrayOutputStream();
+		
+				// take bytes from the input stream and put into out stream
+				byte [] buf = new byte[1028];
+				int len = 0;
+			    while ((len = bin.read(buf, 0, buf.length)) != -1){
+			       out.write(buf, 0, len);
+			    }
+	byte [] resultClassBytes = out.toByteArray(); 
+		
+The code is expecting a stream to read from as input. Here's what the block from above looks like (truncated
+for clarity):
+
+	{
+	  "5NDsk1zSu6UDwTdQgS7U6b-E": {
+	    "S": "16oTi6UtrTfr9YeEInHara",
+	    "P": "F8JqW9NOzvvfHCPy0ZcuT",
+	    "Nonce.0": "vRFeSnY4xGIxFARZmwXTcubjAiq2MFON",
+	    "EncapsulatedKey": "-f-wIVSd_IjPBDrSksN9gTWqcTBdOBHVcd1Vc52BDElOqkleo8tdDd8cvZglytS2",
+	    "StreamAlg": "Salsa20",
+	    "StreamNonce.0": "1t_0-3P_5D0=",
+	    "Data.0": [
+	      "GrhZ11N4w5E2G15YUqm0C9A7oxRPg_688s0ZcrdcTXH_H_UGJ6KjZ1j97uNfC0MsXdB-9s1-",
+	      "2asfRUEIAlPOslsD80i1OANZ8RHxA7YF0BkDkj-CpAOvGU-bA6scXtUD2m2BGAPYB6qYA6MD",
+	      ...
+		  "qcvNA7PybERZld98mHEkb04wFdo9Nv4hgN2yDXs="
+	    ],
+	    "Input.Length": "31403"
+	  }
+	}
+
+The full example is in the [test/resources folder](https://github.com/buttermilk-crypto/tweetPepper/tree/master/src/test/resources).
 
 
 

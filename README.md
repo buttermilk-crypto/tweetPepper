@@ -21,7 +21,7 @@ is PGP, and high time for some new ideas. But what would a new PKI look like? Ho
 be encoded?  
 
 I think of TweetPepper as a "micro-library." It is not trying to be all things to all people. But it
-represents some of the basic ideas in the context of DJB's suite of cryptography. 
+represents some of the basic ideas I am interested in within the context of DJB's suite of cryptography. 
 
 Here's what some boxing and signing keys look like serialized to JSON (think replacement for java key stores, PKCS#12, and PKCS#8):
 

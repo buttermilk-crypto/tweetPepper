@@ -1,14 +1,16 @@
-// $Id: CubeHash512.java 183 2010-05-08 21:34:53Z tp $
+// $Id: CubeHash384.java 183 2010-05-08 21:34:53Z tp $
 
-package com.cryptoregistry.digest;
+package com.cryptoregistry.digest.cubehash;
 
 /**
- * <p>This class implements the CubeHash-512 digest algorithm under the
- * {@link Digest} API.</p>
+ * <p>
+ * This class implements the CubeHash-384 digest algorithm under the
+ * {@link Digest} API.
+ * </p>
  *
  * <pre>
  * ==========================(LICENSE BEGIN)============================
- *
+ * 
  * Copyright (c) 2007-2010  Projet RNRT SAPHIR
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -29,52 +31,42 @@ package com.cryptoregistry.digest;
  * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
+ * 
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 183 $
- * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
+ * @version $Revision: 183 $
+ * @author Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 
-public class CubeHash512 extends CubeHashCore {
+public class CubeHash384 extends CubeHashCore {
 
-	private static final int[] IV = {
-		0x2AEA2A61, 0x50F494D4, 0x2D538B8B,
-		0x4167D83E, 0x3FEE2313, 0xC701CF8C,
-		0xCC39968E, 0x50AC5695, 0x4D42C787,
-		0xA647A8B3, 0x97CF0BEF, 0x825B4537,
-		0xEEF864D2, 0xF22090C4, 0xD0E5CD33,
-		0xA23911AE, 0xFCD398D9, 0x148FE485,
-		0x1B017BEF, 0xB6444532, 0x6A536159,
-		0x2FF5781C, 0x91FA7934, 0x0DBADEA9,
-		0xD65C8A2B, 0xA5A70E75, 0xB1C62456,
-		0xBC796576, 0x1921C8F7, 0xE7989AF1,
-		0x7795D246, 0xD43E3B44
-	};
+	private static final int[] IV = { 0xE623087E, 0x04C00C87, 0x5EF46453,
+			0x69524B13, 0x1A05C7A9, 0x3528DF88, 0x6BDD01B5, 0x5057B792,
+			0x6AA7A922, 0x649C7EEE, 0xF426309F, 0xCB629052, 0xFC8E20ED,
+			0xB3482BAB, 0xF89E5E7E, 0xD83D4DE4, 0x44BFC10D, 0x5FC1E63D,
+			0x2104E6CB, 0x17958F7F, 0xDBEAEF70, 0xB4B97E1E, 0x32C195F6,
+			0x6184A8E4, 0x796C2543, 0x23DE176D, 0xD33BBAEC, 0x0C12E5D2,
+			0x4EB95A7B, 0x2D18BA01, 0x04EE475F, 0x1FC5F22E };
 
 	/**
 	 * Create the engine.
 	 */
-	public CubeHash512()
-	{
+	public CubeHash384() {
 	}
 
 	/** @see Digest */
-	public Digest copy()
-	{
-		return copyState(new CubeHash512());
+	public Digest copy() {
+		return copyState(new CubeHash384());
 	}
 
 	/** @see Digest */
-	public int getDigestLength()
-	{
-		return 64;
+	public int getDigestLength() {
+		return 48;
 	}
 
 	/** @see CubeHashCore */
-	int[] getIV()
-	{
+	int[] getIV() {
 		return IV;
 	}
 }

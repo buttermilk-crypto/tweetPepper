@@ -28,11 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cryptoregistry.digest.CubeHash224;
-import com.cryptoregistry.digest.CubeHash256;
-import com.cryptoregistry.digest.CubeHash384;
-import com.cryptoregistry.digest.CubeHash512;
-import com.cryptoregistry.digest.Digest;
+import com.cryptoregistry.digest.cubehash.CubeHash224;
+import com.cryptoregistry.digest.cubehash.CubeHash256;
+import com.cryptoregistry.digest.cubehash.CubeHash384;
+import com.cryptoregistry.digest.cubehash.CubeHash512;
+import com.cryptoregistry.digest.cubehash.CubeHashCore;
 import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyForPublication;
@@ -105,7 +105,7 @@ public class TweetPepperVerifier {
 		
 		
 		// 1.3 - create the appropriate Digest object
-		Digest digest = null;
+		CubeHashCore digest = null;
 		switch(digestAlgorithm){
 			case "CubeHash-224": digest = new CubeHash224(); break;
 			case "CubeHash-256": digest = new CubeHash256(); break;

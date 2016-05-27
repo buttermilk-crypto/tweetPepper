@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.cryptoregistry.digest.CubeHash256;
-import com.cryptoregistry.digest.Digest;
+import com.cryptoregistry.digest.cubehash.CubeHash256;
+import com.cryptoregistry.digest.cubehash.CubeHashCore;
 import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
@@ -40,7 +40,7 @@ public class TweetPepperSigner {
 	public final String signedBy;
 	public final SigningKeyContents keyContents;
 	public final List<Block> blocks;
-	public final Digest digest;
+	public final CubeHashCore digest;
 
 	public TweetPepperSigner(String signedBy, SigningKeyContents keyContents) {
 		super();

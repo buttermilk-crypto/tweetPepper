@@ -1,3 +1,24 @@
+/*
+ 
+Copyright (c) 2000-2015 The Legion of the Bouncy Castle Inc. (http://www.bouncycastle.org)
+Copyright 2016, David R. Smith, All Rights Reserved
+
+This file is part of TweetPepper.
+
+TweetPepper is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+TweetPepper is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
+
+ */
 package com.cryptoregistry.tweet.salt.pqc;
 
 import java.security.SecureRandom;
@@ -5,8 +26,12 @@ import java.security.SecureRandom;
 import com.cryptoregistry.digest.sha3.SHA3Digest;
 
 /**
- * This implementation is based heavily on the C reference implementation from
- * https://cryptojedi.org/crypto/index.shtml.
+ * <p>This implementation is based heavily on the C reference implementation from
+ * https://cryptojedi.org/crypto/index.shtml. Here is a paper on the algorithm choices
+ * by the designers: https://eprint.iacr.org/2015/1092.pdf
+ * </p>
+ * 
+ * 
  */
 public class NewHope {
 
@@ -25,6 +50,8 @@ public class NewHope {
 		err = new ErrorCorrection();
 	}
 
+	// External interface -
+	
 	public NHKeyContents generateKeys(SecureRandom rand) {
 		byte[] pubData = new byte[NewHope.SENDA_BYTES];
 		short[] secData = new short[NewHope.POLY_SIZE];
@@ -37,23 +64,25 @@ public class NewHope {
 			NHKeyForPublication senderPublicKey) {
 
 		byte[] sharedValue = new byte[NewHope.AGREEMENT_SIZE];
-		byte[] publicKeyValue = new byte[NewHope.SENDB_BYTES];
+		byte[] exchangeKeyValue = new byte[NewHope.SENDB_BYTES];
 
-		sharedB(rand, sharedValue, publicKeyValue, senderPublicKey.pubData);
+		sharedB(rand, sharedValue, exchangeKeyValue, senderPublicKey.pubData);
 
-		return new ExchangePair(new NHKeyForPublication(publicKeyValue),
-				sharedValue);
+		return new ExchangePair(new NHKeyForExchange(exchangeKeyValue), sharedValue);
 	}
 
 	public byte[] calculateAgreement(NHKeyContents contents,
-			NHKeyForPublication otherPublicKey) {
+			NHKeyForExchange exchangeKey) {
 
 		byte[] sharedValue = new byte[NewHope.AGREEMENT_SIZE];
 
-		sharedA(sharedValue, contents.secData, otherPublicKey.pubData);
+		sharedA(sharedValue, contents.secData, exchangeKey.pubData);
 
 		return sharedValue;
 	}
+	
+	// End external
+	
 
 	void keygen(SecureRandom rand, byte[] send, short[] sk) {
 		byte[] seed = new byte[Params.SEED_BYTES];
@@ -81,7 +110,7 @@ public class NewHope {
 		encodeA(send, pk, seed);
 	}
 
-	public void sharedB(SecureRandom rand, byte[] sharedKey, byte[] send,
+	void sharedB(SecureRandom rand, byte[] sharedKey, byte[] send,
 			byte[] received) {
 		short[] pkA = new short[Params.N];
 		byte[] seed = new byte[Params.SEED_BYTES];
@@ -125,7 +154,7 @@ public class NewHope {
 		}
 	}
 
-	public void sharedA(byte[] sharedKey, short[] sk, byte[] received) {
+	void sharedA(byte[] sharedKey, short[] sk, byte[] received) {
 		short[] bp = new short[Params.N];
 		short[] c = new short[Params.N];
 		decodeB(bp, c, received);

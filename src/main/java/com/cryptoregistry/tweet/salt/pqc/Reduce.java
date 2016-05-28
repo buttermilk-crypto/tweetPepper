@@ -1,3 +1,6 @@
+/*
+ Copyright (c) 2000-2015 The Legion of the Bouncy Castle Inc. (http://www.bouncycastle.org)
+ */
 package com.cryptoregistry.tweet.salt.pqc;
 
 class Reduce {

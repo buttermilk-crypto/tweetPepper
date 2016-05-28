@@ -42,6 +42,11 @@ import com.cryptoregistry.tweet.pepper.key.SecretKey;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 import com.cryptoregistry.tweet.pepper.key.TweetKeyMetadata;
 import com.cryptoregistry.tweet.salt.TweetNaCl;
+import com.cryptoregistry.tweet.salt.pqc.ExchangePair;
+import com.cryptoregistry.tweet.salt.pqc.NHKeyContents;
+import com.cryptoregistry.tweet.salt.pqc.NHKeyForExchange;
+import com.cryptoregistry.tweet.salt.pqc.NHKeyForPublication;
+import com.cryptoregistry.tweet.salt.pqc.NewHope;
 import com.cryptoregistry.tweet.salt.stream.Salsa20;
 
 /**
@@ -406,5 +411,21 @@ public final class TweetPepper {
 			default: throw new RuntimeException("Unexpected algorithm: "+streamingAlg);
 		}
 	}
+	
+	// POST-QUANTUM CRYPTO SECTION
+	
+	public NHKeyContents generatePQCKeys() {
+		return new NewHope().generateKeys(rand);
+	}
+
+	public ExchangePair generateExchange(NHKeyForPublication receiverPublicKey) {
+		return new NewHope().generateExchange(rand, receiverPublicKey);
+	}
+
+	public byte[] calculateAgreement(NHKeyContents ourKeyContents, NHKeyForExchange exchangeKey) {
+		return new NewHope().calculateAgreement(ourKeyContents, exchangeKey);
+	}
+	
+	
 
 }

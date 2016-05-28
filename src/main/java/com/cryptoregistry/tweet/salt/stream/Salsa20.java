@@ -31,8 +31,6 @@ package com.cryptoregistry.tweet.salt.stream;
  * <p>
  * This is "forked" from https://raw.githubusercontent.com/neilalexander/jnacl/master/crypto/salsa20.java
  * </p>
- * 
- * @author Dave
  *
  */
 public class Salsa20 {

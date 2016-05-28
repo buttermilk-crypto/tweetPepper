@@ -33,9 +33,11 @@ import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.tweet.pepper.KMU;
 
 /**
+ * <p>
  * Read a JSON file and build a KMU or "Key Material Unit" object. A KMU is logically similar in function 
  * to a key store but has more flexibility (e.g., can contain arbitrary data, contacts, etc). It is more like a
- * message in some ways and less like a data store, which is what a key store reminds me of.
+ * message in some ways and less like a database, which is what a java key store reminds me of. 
+ * </p>
  * 
  * @author Dave
  *

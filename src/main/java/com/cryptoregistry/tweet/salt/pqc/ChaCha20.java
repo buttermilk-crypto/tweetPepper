@@ -1,15 +1,37 @@
+/*
+ 
+Copyright (c) 2000-2015 The Legion of the Bouncy Castle Inc. (http://www.bouncycastle.org)
+Copyright 2016, David R. Smith, All Rights Reserved
+
+This file is part of TweetPepper.
+
+TweetPepper is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+TweetPepper is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
+
+ */
 package com.cryptoregistry.tweet.salt.pqc;
 
 /**
- * I've compressed some BC class hierarchy related to engines into one
- * compilation unit here. Should be fine from the package perspective.
+ * I've compressed some of the BC class hierarchy related to engines into one compilation unit here and
+ * made everything package-protected. Should play well enough with other jars. Don't use this for
+ * digests, think of it as an internal part of New Hope.
  * 
  * @author Dave
  *
  */
-public class ChaCha20 {
-	public ChaCha20() {
-	}
+class ChaCha20 {
+	
+	public ChaCha20() {}
 
 	void process(byte[] key, byte[] nonce, byte[] buf, int off, int len) {
 		ChaChaEngine e = new ChaChaEngine(20);
@@ -625,19 +647,7 @@ class Salsa20Engine {
 }
 
 class ChaChaEngine extends Salsa20Engine {
-	/**
-	 * Creates a 20 rounds ChaCha engine.
-	 */
-	public ChaChaEngine() {
-		super();
-	}
 
-	/**
-	 * Creates a ChaCha engine with a specific number of rounds.
-	 * 
-	 * @param rounds
-	 *            the number of rounds (must be an even number).
-	 */
 	public ChaChaEngine(int rounds) {
 		super(rounds);
 	}

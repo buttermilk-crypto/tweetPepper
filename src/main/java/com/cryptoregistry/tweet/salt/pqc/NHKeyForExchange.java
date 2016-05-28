@@ -19,26 +19,13 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.cryptoregistry.tweet.salt.pqc;
 
-public class NHKeyForPublication {
+public class NHKeyForExchange {
 
 	NHKeyMetadata metadata;
 	final byte[] pubData;
-	
-	public NHKeyForPublication(NHKeyMetadata metadata, byte[] pubData) {
-		this.metadata = metadata;
+
+	public NHKeyForExchange(byte[] pubData) {
 		this.pubData = pubData;
-	}
-
-	public NHKeyForPublication(byte[] pubData) {
-		this.pubData = pubData;
-	}
-
-	public NHKeyMetadata getMetadata() {
-		return metadata;
-	}
-
-	public byte[] getPubData() {
-		return pubData;
 	}
 
 }

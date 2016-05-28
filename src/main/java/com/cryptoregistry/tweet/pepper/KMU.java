@@ -37,7 +37,8 @@ import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
 /**
  * A KMU or "KeyMaterialUnit" is a set which can contain keys, signatures, and associated arbitrary data.
- * It has a unique transaction ID for use in transactions and an administrative contact email
+ * When built for public use it has a unique transaction ID for use in transactions and an administrative 
+ * contact email for issues
  * 
  * @author Dave
  *

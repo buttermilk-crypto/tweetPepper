@@ -38,6 +38,7 @@ import com.cryptoregistry.tweet.pepper.format.KMUInputAdapter;
 import com.cryptoregistry.tweet.pepper.format.KMUOutputAdapter;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
+import com.cryptoregistry.tweet.pepper.sig.TweetPepperSHA3Signer;
 import com.cryptoregistry.tweet.pepper.sig.TweetPepperSignature;
 import com.cryptoregistry.tweet.pepper.sig.TweetPepperSigner;
 import com.cryptoregistry.tweet.pepper.sig.TweetPepperVerifier;
@@ -142,6 +143,50 @@ public class JSONTest {
     }
     
     @Test
+    public void testSha3Signature() {
+    	
+    	SigningKeyContents sc = null;
+    	BoxingKeyContents bc = null;
+    	InputStream in = this.getClass().getResourceAsStream("/keys.json");
+    	try (InputStreamReader reader = new InputStreamReader(in)){
+    		KMUInputAdapter kmuReader = new KMUInputAdapter(reader);
+    		KMU kmu = kmuReader.read();
+    		char [] pass = {'p','a','s','s'};
+    		kmu.openKeyBlocks(pass);
+    		sc = kmu.getSigningKey();
+    		bc = kmu.getBoxingKey();
+    	} catch (IOException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+    	
+    	Block data = new Block(BlockType.D);
+    	data.put("Key1", "Value1");
+    	data.put("Key2", "Value2");
+    	data.put("Key3", "Value3");
+    	
+    	  Block pubBoxing = bc.pubBlock();
+    	  Block pubSigning = sc.pubBlock();
+    	  
+    	  KMU req = new KMU("dave@cryptoregistry.com");
+      	  req
+      	  .addBlock(data)
+      	  .addBlock(pubBoxing)
+      	  .addBlock(pubSigning);
+      	  
+      	  TweetPepperSHA3Signer signer = new TweetPepperSHA3Signer("Chinese_Knees", sc);
+      	  signer.addKMUBlocks(req);
+      	  TweetPepperSignature sig = signer.sign();
+      	  req.addBlock(sig.toBlock());
+      	  
+      	  KMUOutputAdapter kmur = new KMUOutputAdapter(req);
+      	  StringWriter reqWriter = new StringWriter();
+      	  kmur.writeTo(reqWriter);
+      	  String reqString = reqWriter.toString();
+      	  
+    }
+    
+    @Test
     public void readKMUKeys(){
     	
     	InputStream in = this.getClass().getResourceAsStream("/keys.json");
@@ -210,5 +255,21 @@ public class JSONTest {
 		}
     }
     
+    @Test
+    public void readKMUAndValidateSHA3Signature(){
+    	InputStream in = this.getClass().getResourceAsStream("/sha3Signature.json");
+    	try (InputStreamReader reader = new InputStreamReader(in)){
+    		KMUInputAdapter kmuReader = new KMUInputAdapter(reader);
+    		KMU kmu = kmuReader.read();
+    		TweetPepperVerifier verifier = new TweetPepperVerifier();
+    		verifier.addKMUBlocks(kmu);
+    		if(!verifier.verify()){
+    			Assert.fail();
+    		}
+    		
+    	} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
     
 }

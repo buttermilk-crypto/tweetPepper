@@ -1,0 +1,50 @@
+{
+  "Version": "Buttermilk Tweet Pepper 1.0",
+  "KMUHandle": "6nMP5PZtfF4C00YhQXYAkn-T",
+  "AdminEmail": "dave@cryptoregistry.com",
+  "Contents": {
+    "7xkqNLLv9aND0dfNVqNrty-D": {
+      "Key1": "Value1",
+      "Key2": "Value2",
+      "Key3": "Value3"
+    },
+    "3yW9H8jgN5yN5DoF4pCEFt-P": {
+      "KeyAlgorithm": "TweetNaCl",
+      "KeyUsage": "Boxing",
+      "CreatedOn": "2016-05-22T09:13:17.894+10:00",
+      "P": "nH26f2KYi-HXg3cJB6DhcjiPTY37U4hFLcNkbAGCvUg="
+    },
+    "2f18cpRAuoL5BKR0swGXaJ-P": {
+      "KeyAlgorithm": "TweetNaCl",
+      "KeyUsage": "Signing",
+      "CreatedOn": "2016-05-22T09:13:17.932+10:00",
+      "P": "ST04RKE8S8gVXwIz2MljBofEL_dDObHUD1ZgZWrTLUc="
+    },
+    "2gOd1SGYigCUB32USchLo-S": {
+      "CreatedOn": "2016-05-29T11:33:44.915+10:00",
+      "DigestAlgorithm": "SHA3",
+      "SignedWith": "2f18cpRAuoL5BKR0swGXaJ",
+      "SignedBy": "Chinese_Knees",
+      "s": [
+        "qy3t3EF94dISeN26SWGVXJSZZqufqrW9c62M1ghsktuNkV2Yj2onHooTEKGVCFWCNqcLLH8V",
+        "ekf6GEVJYn_eCO9e58GkG5m2qiAA_rQV7AljP-lHVxsqPDsgAb5PH8dl"
+      ],
+      "DataRefs": [
+        "2gOd1SGYigCUB32USchLo-S:CreatedOn",
+        ".SignedBy",
+        ".SignedWith",
+        "7xkqNLLv9aND0dfNVqNrty-D:Key1",
+        ".Key2",
+        ".Key3",
+        "3yW9H8jgN5yN5DoF4pCEFt-P:KeyAlgorithm",
+        ".KeyUsage",
+        ".CreatedOn",
+        ".P",
+        "2f18cpRAuoL5BKR0swGXaJ-P:KeyAlgorithm",
+        ".KeyUsage",
+        ".CreatedOn",
+        ".P"
+      ]
+    }
+  }
+}

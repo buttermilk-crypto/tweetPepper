@@ -18,6 +18,8 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 
  */
 package com.cryptoregistry.tweet.salt.pqc;
+import com.cryptoregistry.tweet.pepper.Block;
+import com.cryptoregistry.util.ArrayUtil;
 
 public class NHKeyContents extends NHKeyForPublication {
 
@@ -26,12 +28,32 @@ public class NHKeyContents extends NHKeyForPublication {
 	public NHKeyContents(byte[] pubData, short[] secData) {
 		super(pubData);
 		this.secData = secData;
-
+	}
+	
+	public NHKeyContents(Block block){
+		super(block);
+		if(block.isU() && block.containsKey("S")&&block.containsKey("KeyUsage")&&block.get("KeyUsage").equals("Agreement")){
+			this.secData = ArrayUtil.decode1dShort(block.get("S"));
+		}else{
+			throw new RuntimeException("doesn't look like an open key block, or else KeyUsage is wrong");
+		}
 	}
 	
 	public NHKeyForPublication getPublicKey() {
 		byte [] pub = this.pubData;
 		return new NHKeyForPublication(this.metadata, pub);
+	}
+	
+	public Block toBlock() {
+		 Block b = super.toBlock();
+        b.put("S", ArrayUtil.encode1dShort(secData));
+        b.name = b.name.substring(0,b.name.length()-2)+"-U";
+        return b;
+	}
+	
+	public Block pubBlock() {
+		 Block b = super.toBlock();
+       return b;
 	}
 
 }

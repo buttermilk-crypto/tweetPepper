@@ -20,17 +20,35 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 package com.cryptoregistry.tweet.salt.pqc;
 
 import java.util.Date;
+import java.util.UUID;
 
 import com.cryptoregistry.tweet.pepper.BlockType;
+import com.cryptoregistry.tweet.pepper.key.KeyUsage;
+import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
 public class NHKeyMetadata {
 
-	// public final String handle;
-	// public final BlockType blockType;
-	// public final Date createdOn;
-
-	public NHKeyMetadata() {
+	public final String handle;
+	public final BlockType blockType;
+	public final Date createdOn;
+	public final KeyUsage keyUsage;
+	
+	public NHKeyMetadata(String handle, BlockType blockType, Date createdOn, KeyUsage keyUsage) {
 		super();
+		this.handle = handle;
+		this.blockType = blockType;
+		this.createdOn = createdOn;
+		this.keyUsage = keyUsage;
 	}
+
+	public String toString() {
+		return handle+"-"+blockType.toString();
+	}
+	
+	public static NHKeyMetadata createMetadata(BlockType t){
+		BijectiveEncoder enc = new BijectiveEncoder();
+		return new NHKeyMetadata(enc.encode(UUID.randomUUID()), t, new Date(),KeyUsage.Agreement);
+	}
+	
 
 }

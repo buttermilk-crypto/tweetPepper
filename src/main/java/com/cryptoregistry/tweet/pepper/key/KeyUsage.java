@@ -21,5 +21,5 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 package com.cryptoregistry.tweet.pepper.key;
 
 public enum KeyUsage {
-	Boxing, Signing, SecretBox;
+	Agreement, Boxing, Signing, SecretBox;
 }

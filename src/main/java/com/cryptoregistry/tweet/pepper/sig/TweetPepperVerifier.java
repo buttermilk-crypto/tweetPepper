@@ -33,6 +33,7 @@ import com.cryptoregistry.digest.cubehash.CubeHash256;
 import com.cryptoregistry.digest.cubehash.CubeHash384;
 import com.cryptoregistry.digest.cubehash.CubeHash512;
 import com.cryptoregistry.digest.cubehash.CubeHashCore;
+import com.cryptoregistry.digest.sha3.SHA3Digest;
 import com.cryptoregistry.tweet.pepper.Block;
 import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyForPublication;
@@ -103,6 +104,10 @@ public class TweetPepperVerifier {
 		
 		SigningKeyForPublication verifierKey = new SigningKeyForPublication(keyBlock);
 		
+		// short circuit if needed
+		if(digestAlgorithm.contains("SHA")){
+			return verifySha(verifierKey, dataRefs, sig);
+		}
 		
 		// 1.3 - create the appropriate Digest object
 		CubeHashCore digest = null;
@@ -126,7 +131,7 @@ public class TweetPepperVerifier {
 			block.loadToSignatureScope(scope);
 		}
 		
-	//	System.err.println(scope);
+		//	System.err.println(scope);
 		
 		// 1.5.1 - run a loop on the data ref list. The token items will be normalized in the pass.
 		// find the data items and digest in order
@@ -155,6 +160,59 @@ public class TweetPepperVerifier {
 		
 		// 1.5.2 - digest complete. input to crypto_sign_open
 		byte [] digestBytes = digest.digest();
+		byte [] sigBytes = Base64.getUrlDecoder().decode(sig);
+		try {
+			byte [] outsign = new TweetNaCl().crypto_sign_open(sigBytes, verifierKey.publicKey.getBytes());
+			return Arrays.equals(digestBytes, outsign);
+		}catch(InvalidSignatureException x){
+			return false;
+		}
+	}
+	
+	private boolean verifySha(SigningKeyForPublication verifierKey, String dataRefs, String sig){
+		
+		// BC-derived code has a different interface for digests
+		SHA3Digest digest = new SHA3Digest();
+		
+		// 1.4 - construct a map of the possible data with uuid:key <-> value entries; 
+		// this is the signature's available validation scope; it includes the Signature block contents itself
+		
+		Map<String,String> scope = new HashMap<String,String>();
+		for(Block block: blocks){
+			block.loadToSignatureScope(scope);
+		}
+		
+		//	System.err.println(scope);
+		
+		// 1.5.1 - run a loop on the data ref list. The token items will be normalized in the pass.
+		// find the data items and digest in order
+		
+		String currentUUID = null;
+		String [] refs = dataRefs.split("\\,");
+		for(String ref: refs) {
+			
+			// 1.5.1.0 - the ref has whitespace to cleanup 
+			ref = ref.trim();
+			
+			// 1.5.1.1 - if it does not start with a ., it has a distinguished form, harvest the uuid for later use
+			if(!ref.startsWith(".")){
+				currentUUID = ref.split("\\:")[0];
+			}else{
+				// 1.5.1.2 - patch using currentUUID
+				ref = currentUUID+":"+ref.substring(1);
+			}
+			
+			// 1.5.1.3 - ok, now start testing the scope for items. It is an error if an expected 
+			// item is not present in the scope
+			String value = scope.get(ref);
+			if(value == null) throw new RuntimeException("Missing value in scope map, ref:"+ref);
+			byte [] bytes = value.getBytes(StandardCharsets.UTF_8);
+			digest.update(bytes, 0, bytes.length);
+		}
+		
+		// 1.5.2 - digest complete. input to crypto_sign_open
+		byte [] digestBytes = new byte[digest.getDigestSize()];
+		digest.doFinal(digestBytes, 0);
 		byte [] sigBytes = Base64.getUrlDecoder().decode(sig);
 		try {
 			byte [] outsign = new TweetNaCl().crypto_sign_open(sigBytes, verifierKey.publicKey.getBytes());

@@ -49,9 +49,16 @@ import com.cryptoregistry.tweet.pepper.KMU;
 public class KMUOutputAdapter {
 
 	final KMU kmu;
+	final WriterConfig config;
 	
 	public KMUOutputAdapter(KMU keyMaterialUnit) {
+		this(keyMaterialUnit,true);
+	}
+	
+	public KMUOutputAdapter(KMU keyMaterialUnit, boolean pretty) {
 		this.kmu = keyMaterialUnit;
+		if(pretty)config = WriterConfig.PRETTY_PRINT;
+		else config = WriterConfig.MINIMAL;
 	}
 	
 	public void writeTo(File file){
@@ -64,7 +71,7 @@ public class KMUOutputAdapter {
 		}
 	}
 	
-	public void writeTo(Writer writer){
+	public Writer writeTo(Writer writer){
 		
 		BlockFormatter bf = new BlockFormatter();
 		Iterator<String> iter = kmu.map.keySet().iterator();
@@ -85,11 +92,11 @@ public class KMUOutputAdapter {
 		   .add("Version", kmu.version)
 		   .add("KMUHandle", kmu.kmuHandle)
 		   .add("AdminEmail", kmu.adminEmail)
-		   .add("Contents", contents).toString(WriterConfig.PRETTY_PRINT);
+		   .add("Contents", contents).toString(config);
 		}else{
 			 output = Json.object()
 			 .add("Version", kmu.version)
-			.add("Contents", contents).toString(WriterConfig.PRETTY_PRINT);
+			.add("Contents", contents).toString(config);
 		}
 		
 		try {
@@ -99,6 +106,8 @@ public class KMUOutputAdapter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		
+		return writer;
 	}
 	
 	/**
@@ -106,7 +115,7 @@ public class KMUOutputAdapter {
 	 * 
 	 * @param writer
 	 */
-	public void emitKeys(Writer writer){
+	public Writer emitKeys(Writer writer){
 		
 		BlockFormatter bf = new BlockFormatter();
 		Iterator<String> iter = kmu.map.keySet().iterator();
@@ -123,7 +132,7 @@ public class KMUOutputAdapter {
 		
 		String output = Json.object()
 		.add("Version", KMU.confidentialKeyVersion)
-		.add("Contents", contents).toString(WriterConfig.PRETTY_PRINT);
+		.add("Contents", contents).toString(config);
 		try {
 			writer.write(output);
 			writer.flush();
@@ -131,6 +140,8 @@ public class KMUOutputAdapter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		
+		return writer;
 	}
 
 }

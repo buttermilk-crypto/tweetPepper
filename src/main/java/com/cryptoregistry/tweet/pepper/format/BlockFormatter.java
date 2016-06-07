@@ -32,7 +32,7 @@ import com.cryptoregistry.json.WriterConfig;
 import com.cryptoregistry.tweet.pepper.Block;
 
 /**
- * Two-way transform blocks-to-json or vice-versa. The is parsing and formatting the "Contents" part of a KMU
+ * Two-way transform blocks-to-json or vice-versa. This is parsing and formatting the "Contents" part of a KMU
  * 
  * @author Dave
  *
@@ -46,6 +46,12 @@ public final class BlockFormatter {
 	public BlockFormatter() {
 		blocks = new ArrayList<Block>();
 		pretty = true;
+	}
+	
+	public BlockFormatter(WriterConfig config) {
+		blocks = new ArrayList<Block>();
+		if(config == WriterConfig.PRETTY_PRINT) pretty=true;
+		else pretty=false;
 	}
 
 	public BlockFormatter(Block block) {
@@ -90,16 +96,22 @@ public final class BlockFormatter {
 			while (biter.hasNext()) {
 				String itemKey = biter.next();
 				String itemValue = block.get(itemKey);
-				// special case
-				if (itemKey.equals("DataRefs")) {
-					obj.add(itemKey, splitByComma(itemValue));
-				} else {
-					if (itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH) {
-						obj.add(itemKey, split(itemValue, 72));
+				
+				if(pretty){
+					// special case
+					if (itemKey.equals("DataRefs")) {
+						obj.add(itemKey, splitByComma(itemValue));
 					} else {
-						obj.add(itemKey, itemValue);
+						if (itemValue.length() >= JsonValue.TRANSFORM_LINE_LENGTH) {
+							obj.add(itemKey, split(itemValue, 72));
+						} else {
+							obj.add(itemKey, itemValue);
+						}
 					}
+				}else{
+					obj.add(itemKey, itemValue);
 				}
+				
 			}
 			contents.add(block.name, obj);
 		}
@@ -135,11 +147,13 @@ public final class BlockFormatter {
 				JsonValue v = blk.get(dataKey);
 				if (v.isArray()) { // auto-marshalling string vs. array
 					JsonArray array = blk.get(dataKey).asArray();
+					
 					if (dataKey.equals("DataRefs")) {
 						block.put(dataKey, combineCommaDelimited(array));
 					} else {
 						block.put(dataKey, combine(array));
 					}
+					
 				} else if (v.isString()) {
 					block.put(dataKey, blk.get(dataKey).asString());
 				}

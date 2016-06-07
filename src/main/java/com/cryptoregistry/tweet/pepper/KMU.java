@@ -45,8 +45,8 @@ import com.cryptoregistry.tweet.url.BijectiveEncoder;
  */
 public class KMU {
 
-	public static final String transactionVersion = "Buttermilk Tweet Pepper 1.0";
-	public static final String confidentialKeyVersion = "Buttermilk Tweet Pepper Keys 1.0";
+	public static final String transactionVersion = "TweetPepper\u00AE Transaction Format 1.0";
+	public static final String confidentialKeyVersion = "TweetPepper\u00AE Keystore Format 1.0";
 	
 	public final String version;
 	public final String kmuHandle; // essentially a transaction handle, UUID that ends in "-T"
@@ -257,6 +257,20 @@ public class KMU {
 			}
 		}
 		return this;
+	}
+	
+	/**
+	 * Return the first block of this type
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public Block findBlock(BlockType type){
+		for(String s: map.keySet()){
+			Block b = map.get(s);
+			if(type.equals(b.getBlockType())) return b;
+		}
+		return null;
 	}
 	
 }

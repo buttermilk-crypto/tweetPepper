@@ -21,7 +21,6 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 package com.cryptoregistry.tweet.pepper;
 
 import java.util.Base64;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;

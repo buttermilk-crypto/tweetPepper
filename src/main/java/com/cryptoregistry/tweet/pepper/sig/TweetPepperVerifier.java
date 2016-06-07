@@ -104,10 +104,12 @@ public class TweetPepperVerifier {
 		
 		SigningKeyForPublication verifierKey = new SigningKeyForPublication(keyBlock);
 		
-		// short circuit if needed
+		// short circuit if needed, we take a different pathway for SHA-3
 		if(digestAlgorithm.contains("SHA")){
 			return verifySha(verifierKey, dataRefs, sig);
 		}
+		
+		// this is the CubeHash pathway
 		
 		// 1.3 - create the appropriate Digest object
 		CubeHashCore digest = null;

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Base64;
 
@@ -158,7 +159,7 @@ public class PNGSigner extends Constants {
 			scan(in, out, kmu); 
 			
 			File bk = new File(file.getParentFile(),file.getName()+".bk");
-			Files.copy(file.toPath(), bk.toPath()); // back up original
+			Files.copy(file.toPath(), bk.toPath(),StandardCopyOption.REPLACE_EXISTING); // back up original
 			Files.write(file.toPath(), baos.toByteArray());
 		
 		} catch (IOException e) {
@@ -179,49 +180,21 @@ public class PNGSigner extends Constants {
 		// loop through the chunks
 		control: while(true){
 			
-			// get the chunk length
-			byte []uIntBytes = new byte[4];
-			din.readFully(uIntBytes, 0, 4);
-			long uInt = uint(uIntBytes);
-			
-			// get the chunk type
-			byte [] type = new byte[4];
-			din.readFully(type, 0, 4);
-			String chunkType = chunkType(type);
-			
-			// read the chunk data (if exists) and CRC
-			byte [] data = null;
-			byte[]crcBytes= new byte[4];
-			
-			if(uInt > 0){
-				data = new byte[(int)uInt];
-				din.readFully(data, 0, (int)uInt);
-				din.readFully(crcBytes, 0, 4);
-			}else{
-				din.readFully(crcBytes, 0, 4);
-				data = null;
-			}
-			
-			// verify CRC
-			
-			if(!verifyCRC(type, data, crcBytes)){
-				fail("crc failed for chunk "+chunkType);
-			}
+			Chunk c = this.readChunk(din);
 			
 			// OK, we have the data for the chunk we've found, process the chunk
 			
-			switch(chunkType){
-			    case "IHDR":
+			switch(c.chunkType){
 				case "IDAT": {
 					
 					// digest it
-					digest.update(data, 0, (int)uInt);
+					digest.update(c.data, 0, (int)c.uInt);
 					
 					// just re-write the chunk to the output
-					out.write(uIntBytes);
-					out.write(type);
-				    out.write(data);
-					out.write(crcBytes);
+					out.write(c.uIntBytes);
+					out.write(c.type);
+				    out.write(c.data);
+					out.write(c.crcBytes);
 					break;
 				}
 				case "tpSi": {
@@ -247,7 +220,7 @@ public class PNGSigner extends Constants {
 						// compress as all good data gets compressed
 						byte [] jsBytes = compress(keystoreJSON.getBytes(StandardCharsets.UTF_8));
 						
-						// digest it so the signature has awareness of it
+						// digest data section so the signature has awareness of it
 						digest.update(jsBytes, 0, jsBytes.length);
 						
 						// write as tpKe chunk
@@ -270,7 +243,6 @@ public class PNGSigner extends Constants {
 					// build a data block with the digest
 					Block block = new Block(BlockType.D);
 					block.put("digest.0.base64url", Base64.getUrlEncoder().encodeToString(hash));
-					block.put("digest.0.alg", "SHA3");
 					kmu.addBlock(block);
 					
 					// create signature of the kmu and encode as JSON
@@ -284,9 +256,9 @@ public class PNGSigner extends Constants {
 					this.writeChunk(SIG_CHUNK, dataBytes, out);
 					
 					// finally re-write IEND the chunk to the output
-					out.write(uIntBytes);
-					out.write(type);
-					out.write(crcBytes);
+					out.write(c.uIntBytes);
+					out.write(c.type);
+					out.write(c.crcBytes);
 					
 					// now bail out of this loop
 					break control;
@@ -294,10 +266,10 @@ public class PNGSigner extends Constants {
 				default: {
 					// chunks we don't look at but will keep
 					// just re-write the chunk to the output
-					out.write(uIntBytes);
-					out.write(type);
-					if(data != null) out.write(data);
-					out.write(crcBytes);
+					out.write(c.uIntBytes);
+					out.write(c.type);
+					if(c.data != null) out.write(c.data);
+					out.write(c.crcBytes);
 				}
 			}
 		}

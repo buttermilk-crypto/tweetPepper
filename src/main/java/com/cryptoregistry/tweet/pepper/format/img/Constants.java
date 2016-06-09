@@ -52,8 +52,7 @@ public class Constants {
 			(byte) 'i' };
 
 	// "tpKe = tweet pepper Key store"
-	static final byte[] KS_CHUNK = { (byte) 't', (byte) 'p', (byte) 'K',
-			(byte) 's' };
+	static final byte[] KS_CHUNK = { (byte) 't', (byte) 'p', (byte) 'K', (byte) 'e' };
 
 	protected void fail(String msg) {
 		throw new RuntimeException("error: " + msg);
@@ -63,8 +62,15 @@ public class Constants {
 		throw new RuntimeException(msg);
 	}
 
-	protected long uint(byte[] bytes) {
-		return ((long) (bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3])) & 0xFFFFFFFFL;
+	//protected long uint(byte[] bytes) {
+	//	return ((long) (bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3])) & 0xFFFFFFFFL;
+	//}
+	
+	protected long uint(byte[]b){
+		 return(((b[0]&0xff)<<24) +
+	               ((b[1]&0xff)<<16) +
+	               ((b[2]&0xff)<<8) +
+	               ((b[3]&0xff)));
 	}
 
 	protected String chunkType(byte[] bytes) {
@@ -204,18 +210,22 @@ public class Constants {
 			fail("crc failed for chunk " + chunkType);
 		}
 		
-		return new Chunk(uInt,chunkType,data,crcBytes);
+		return new Chunk(uIntBytes,uInt,type,chunkType,data,crcBytes);
 	}
 }
 
 class Chunk {
+	final byte[]uIntBytes;
 	final long uInt;
+	final byte[]type;
 	final String chunkType;
 	final byte[]data;
 	final byte[]crcBytes;
-	public Chunk(long uInt, String chunkType, byte[] data, byte[] crcBytes) {
+	public Chunk(byte[]uIntBytes,long uInt, byte[]type,String chunkType, byte[] data, byte[] crcBytes) {
 		super();
+		this.uIntBytes=uIntBytes;
 		this.uInt = uInt;
+		this.type=type;
 		this.chunkType = chunkType;
 		this.data = data;
 		this.crcBytes = crcBytes;

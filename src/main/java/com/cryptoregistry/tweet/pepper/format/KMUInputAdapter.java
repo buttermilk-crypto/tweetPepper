@@ -60,6 +60,7 @@ public class KMUInputAdapter {
 			JsonObject obj = root.asObject();
 			String version = obj.get("Version").asString(); //all Tweet formats have a version
 			switch(version){
+				case "TweetPepper\u00AE Keystore Format 1.0":
 				case "Buttermilk Tweet Pepper Keys 1.0": {
 					kmu = new KMU();
 					// we expect an arbitrary number of keys (-X) or -U as the Contents but other 
@@ -69,6 +70,7 @@ public class KMUInputAdapter {
 					
 					break;
 				}
+				case "TweetPepper\u00AE Transaction Format 1.0":
 				case "Buttermilk Tweet Pepper 1.0" : {
 					// would not contain -X or -U, as these confidential bits should not be exported
 					// but would contain KMUHandle and AdminEmail

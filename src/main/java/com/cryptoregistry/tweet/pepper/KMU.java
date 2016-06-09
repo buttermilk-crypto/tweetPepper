@@ -37,6 +37,7 @@ import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
 /**
  * A KMU or "KeyMaterialUnit" is a set which can contain keys, signatures, and associated arbitrary data.
+ * 
  * When built for public use it has a unique transaction ID for use in transactions and an administrative 
  * contact email for issues
  * 
@@ -50,7 +51,7 @@ public class KMU {
 	
 	public final String version;
 	public final String kmuHandle; // essentially a transaction handle, UUID that ends in "-T"
-	public final String adminEmail; // immediate contact for failures, etc
+	public final String adminEmail; // immediate contact point for questions, failures, etc
 	
 	public final Map<String, Block> map; // keys are distinguished-names to the blocks
 	public Map<String,String> aliases;
@@ -272,5 +273,58 @@ public class KMU {
 		}
 		return null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((adminEmail == null) ? 0 : adminEmail.hashCode());
+		result = prime * result + ((aliases == null) ? 0 : aliases.hashCode());
+		result = prime * result
+				+ ((kmuHandle == null) ? 0 : kmuHandle.hashCode());
+		result = prime * result + ((map == null) ? 0 : map.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KMU other = (KMU) obj;
+		if (adminEmail == null) {
+			if (other.adminEmail != null)
+				return false;
+		} else if (!adminEmail.equals(other.adminEmail))
+			return false;
+		if (aliases == null) {
+			if (other.aliases != null)
+				return false;
+		} else if (!aliases.equals(other.aliases))
+			return false;
+		if (kmuHandle == null) {
+			if (other.kmuHandle != null)
+				return false;
+		} else if (!kmuHandle.equals(other.kmuHandle))
+			return false;
+		if (map == null) {
+			if (other.map != null)
+				return false;
+		} else if (!map.equals(other.map))
+			return false;
+		if (version == null) {
+			if (other.version != null)
+				return false;
+		} else if (!version.equals(other.version))
+			return false;
+		return true;
+	}
+	
+	
 	
 }

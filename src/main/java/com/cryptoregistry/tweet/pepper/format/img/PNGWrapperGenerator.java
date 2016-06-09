@@ -37,7 +37,8 @@ import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.util.TimeUtil;
 
 /**
- * <p>Build a suitable PNG file from scratch based on the spec instance and the KMU.</p>
+ * <p>Build a suitable PNG file from scratch based on the spec instance and the KMU. This class does embed
+ * the kmu, that is done with PNGSigner</p>
  * 
  * <p>Not chunk-oriented, requires a graphics context and uses ImageIO.</p>
  * 
@@ -126,8 +127,12 @@ public class PNGWrapperGenerator {
          
 		try {
 		  //  File outputfile = File.createTempFile("tp", "png");
-			String outputPath = spec.get("output.path", "data/test.def.png");
+			String outputPath = spec.get("output.path", null);
+			if(outputPath == null) new RuntimeException("output.path = null, please set in spec");
 			File outputfile = new File(outputPath);
+			if(!outputfile.getParentFile().exists()){
+				outputfile.getParentFile().mkdirs();
+			}
 		    ImageIO.write(img, "png", outputfile);
 		} catch (IOException e) {
 		   throw new RuntimeException(e);

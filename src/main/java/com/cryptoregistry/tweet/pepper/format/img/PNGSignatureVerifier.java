@@ -95,7 +95,6 @@ public class PNGSignatureVerifier extends Constants {
 			Chunk c = this.readChunk(din);
 			
 			switch(c.chunkType){
-			    case "IHDR":
 				case "IDAT": {
 					digest.update(c.data, 0, (int)c.uInt);
 					break;

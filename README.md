@@ -7,12 +7,8 @@ Salsa20, and other useful features you probably want anyway in a micro-cryptogra
 This project was originally forked from https://github.com/ianopolous/tweetnacl-java/. Because that fork was 
 GPL'd I cannot include it in buttermilk, which is licensed Apache 2.0 FOSS.
  
-See https://tweetnacl.cr.yp.to/ and https://nacl.cr.yp.to/ for details about "salt".
-
-Bernstein et. al. present the big ideas here: https://tweetnacl.cr.yp.to/tweetnacl-20140917.pdf.
-
-So, they can have the big ideas, I'm happy with that. I am working on a small idea, which is that a 
-crypto library is not much use without a PKI to support it.  
+See https://tweetnacl.cr.yp.to/ and https://nacl.cr.yp.to/ and https://tweetnacl.cr.yp.to/tweetnacl-20140917.pdf
+ for details about "salt".
 
 ## Motivating the small idea
 
@@ -493,9 +489,16 @@ for clarity):
 
 The full example is in the [test/resources folder](https://github.com/buttermilk-crypto/tweetPepper/tree/master/src/test/resources).
 
+## PNG format image wrappers and keystores
+
+PNG has the interesting capability of being extended with new chunk types. We can embed a compressed
+KMU file in a PNG:
+
+![png](https://github.com/buttermilk-crypto/tweetPepper/blob/master/src/test/resources/wrapper.png)
 
 
-TBC
+
+
 
 
 

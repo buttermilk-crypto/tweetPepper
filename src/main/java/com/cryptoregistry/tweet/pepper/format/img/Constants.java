@@ -36,7 +36,7 @@ import com.cryptoregistry.tweet.pepper.sig.TweetPepperSHA3Signer;
 import com.cryptoregistry.tweet.pepper.sig.TweetPepperSignature;
 
 /**
- * Base class for PNG, working with chunks
+ * Base class for PNG format and generally working with chunks. Does not require a graphics context.
  * 
  * @author Dave
  *
@@ -48,8 +48,7 @@ public class Constants {
 			(byte) 13, (byte) 10, (byte) 26, (byte) 10 };
 
 	// "tpSi = tweet pepper Signed image"
-	static final byte[] SIG_CHUNK = { (byte) 't', (byte) 'p', (byte) 'S',
-			(byte) 'i' };
+	static final byte[] SIG_CHUNK = { (byte) 't', (byte) 'p', (byte) 'S', (byte) 'i' };
 
 	// "tpKe = tweet pepper Key store"
 	static final byte[] KS_CHUNK = { (byte) 't', (byte) 'p', (byte) 'K', (byte) 'e' };
@@ -61,10 +60,6 @@ public class Constants {
 	protected void fail(Exception msg) {
 		throw new RuntimeException(msg);
 	}
-
-	//protected long uint(byte[] bytes) {
-	//	return ((long) (bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3])) & 0xFFFFFFFFL;
-	//}
 	
 	protected long uint(byte[]b){
 		 return(((b[0]&0xff)<<24) +

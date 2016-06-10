@@ -37,8 +37,8 @@ import com.cryptoregistry.tweet.pepper.KMU;
 import com.cryptoregistry.util.TimeUtil;
 
 /**
- * <p>Build a suitable PNG file from scratch based on the spec instance and the KMU. This class does embed
- * the kmu, that is done with PNGSigner</p>
+ * <p>Build a suitable PNG file from scratch based on the spec instance and the KMU. This class does not
+ * embed the kmu data, that is done with PNGSigner.</p>
  * 
  * <p>Not chunk-oriented, requires a graphics context and uses ImageIO.</p>
  * 

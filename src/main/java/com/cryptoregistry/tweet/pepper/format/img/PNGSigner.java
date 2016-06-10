@@ -60,7 +60,7 @@ import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
 <pre>
 {
   "Version": "Buttermilk Tweet Pepper 1.0",
-  "KMUHandle": "Chinese_Knees",
+  "KMUHandle": "2f18cpRAuoL5BKR0swGamp-T",
   "AdminEmail": "dave@cryptoregistry.com",
   "Contents": {
     "2f18cpRAuoL5BKR0swGXaJ-P": {

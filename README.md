@@ -5,7 +5,7 @@ using SCrypt/SecretBox, digital signature support scheme featuring CubeHash or S
 Salsa20, and other useful features you probably want anyway in a lightweight cryptography micro-library.
 
 This project was originally forked from https://github.com/ianopolous/tweetnacl-java/. Because that fork was 
-GPL'd I cannot include it in buttermilk, which is licensed Apache 2.0 FOSS. This is also an opportunity to explore some ways not taken there, it has been useful.
+GPL'd I cannot include it in buttermilk, which is licensed Apache 2.0 FOSS. This is also an opportunity to explore some ways not taken there, it has been useful. Some of my better programming so check it out.
  
 See https://tweetnacl.cr.yp.to/ and https://nacl.cr.yp.to/ and https://tweetnacl.cr.yp.to/tweetnacl-20140917.pdf for details about "salt". 
 
@@ -128,7 +128,7 @@ Here's what a message intended for publication might look like. This is for, e.g
 
 The TweetSalt core class has been massaged. This has been reworked from the fork to be more usable: thread-safe, 
 object-oriented, and also formatted for my Java programmer eyes. A lot of people might be interested 
-just in this class, so here is the [direct link (https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/salt/TweetNaCl.java)
+just in this class, so here is the [direct link](https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/salt/TweetNaCl.java)
 
 The methods are still named as in the project we forked from.
 

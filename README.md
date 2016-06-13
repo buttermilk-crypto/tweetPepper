@@ -347,9 +347,9 @@ required so far, and won't collide with whatever else you are doing.
 ## UUIDs and Identifiers
 
 The explicit intention is that a block is universally distinct from any other and can be recalled from
-a database or storage system, such as a registry. To achieve this we use a UUID.
+a database or storage system, such as a registry. To achieve this we have been using a UUID.
 
-More recently I looked into using a more compact encoding. The [BijectiveEncoder class](https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/url/BijectiveEncoder.java) shrinks the 128 bit UUID value into a 22 byte String. For example:
+More recently I looked into using a more compact encoding. The [BijectiveEncoder class](https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/url/BijectiveEncoder.java) shrinks the 36 character UUID String value into a more compact 22 byte String. For example:
 
 	{
 	  "a4BdeTMcoVJC2bbwm3hhB-E": {
@@ -372,6 +372,7 @@ There are several different informal encryption schemes on offer in TweetPepper,
   + Use SCrypt + Secret Box. This is the right approach if the key is to be based on a password.
   + Use authenticated encryption based on the crypto_box function. This is for Diffie-Hellman type situations.
   + Use authenticated encryption+key encapsulation through a crypto_box/Salsa20 combination.
+  + Use 256 bit key agreement based on the NewHope PQC algorithm. This is not a DJB piece of code and is included for flavor and versatility. The code is extracted and repackaged from very current BC source tree.
   
 The SCrypt implementation is one of the few jar dependencies as TweetNaCl does not contain a KDF. I could have opted for the BouncyCastle pure java implementation but I have chosen to use the one from [com.lambdaworks](https://github.com/wg/scrypt) instead.
 
@@ -487,7 +488,10 @@ for clarity):
 
 The full example is in the [test/resources folder](https://github.com/buttermilk-crypto/tweetPepper/tree/master/src/test/resources).
 
-## PNG format image wrappers and keystores
+
+TODO NewHope Example here.
+
+## PNG format image wrappers and embedded keystores
 
 This is an experimental foray into keystore formats using an image as a wrapper.
 
@@ -497,6 +501,9 @@ KMU file into a PNG and also digitally sign the image and contents.
 ![png](https://github.com/buttermilk-crypto/tweetPepper/blob/master/src/test/resources/wrapper.png)
 
 The code to create this file is in PNGTest.java.
+
+I was hoping to pass these around via Twitter, but the lousy tweet feeds transform any image you attach into a JPEG. 
+It is a field for further study.
 
 TBC
 

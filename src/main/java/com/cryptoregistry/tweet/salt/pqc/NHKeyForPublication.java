@@ -28,7 +28,7 @@ import com.cryptoregistry.util.TimeUtil;
 
 public class NHKeyForPublication {
 
-	NHKeyMetadata metadata;
+	final NHKeyMetadata metadata;
 	final byte[] pubData;
 	
 	public NHKeyForPublication(NHKeyMetadata metadata, byte[] pubData) {
@@ -36,8 +36,10 @@ public class NHKeyForPublication {
 		this.pubData = pubData;
 	}
 
+	// For Pub key
 	public NHKeyForPublication(byte[] pubData) {
 		this.pubData = pubData;
+		this.metadata = NHKeyMetadata.createMetadata(BlockType.P);
 	}
 	
 	public NHKeyForPublication(Block pubBlock){

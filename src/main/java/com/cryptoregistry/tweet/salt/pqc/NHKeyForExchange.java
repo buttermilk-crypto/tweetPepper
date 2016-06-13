@@ -19,6 +19,12 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.cryptoregistry.tweet.salt.pqc;
 
+import java.util.Base64;
+
+import com.cryptoregistry.tweet.pepper.Block;
+import com.cryptoregistry.tweet.pepper.BlockType;
+import com.cryptoregistry.util.TimeUtil;
+
 public class NHKeyForExchange {
 
 	NHKeyMetadata metadata;
@@ -26,6 +32,16 @@ public class NHKeyForExchange {
 
 	public NHKeyForExchange(byte[] pubData) {
 		this.pubData = pubData;
+		this.metadata = NHKeyMetadata.createMetadata(BlockType.A);
+	}
+	
+	public Block toBlock() {
+		Block b = new Block(metadata.handle, BlockType.A);
+		 b.put("KeyAlgorithm","NewHope");
+		 b.put("KeyUsage",metadata.keyUsage.toString());
+		 b.put("CreatedOn",TimeUtil.format(this.metadata.createdOn));
+         b.put("A", Base64.getUrlEncoder().encodeToString(pubData));
+         return b;
 	}
 
 }

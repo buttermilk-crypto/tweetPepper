@@ -21,10 +21,12 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
 package com.cryptoregistry.tweet.pepper;
 
 public enum BlockType {
-	C, D, E, P, U, X, S, T;
+	A, C, D, E, P, U, X, S, T;
 
 	public static BlockType fromFlag(String flag) {
 		switch (flag) {
+		case "-A":
+			return BlockType.A; // for key agreement or key exchange as in NewHope
 		case "-C":
 			return BlockType.C; // contact
 		case "-D":

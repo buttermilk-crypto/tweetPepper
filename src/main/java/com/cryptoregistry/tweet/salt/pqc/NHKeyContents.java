@@ -19,6 +19,7 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.cryptoregistry.tweet.salt.pqc;
 import com.cryptoregistry.tweet.pepper.Block;
+import com.cryptoregistry.tweet.pepper.BlockType;
 import com.cryptoregistry.util.ArrayUtil;
 
 public class NHKeyContents extends NHKeyForPublication {
@@ -26,7 +27,7 @@ public class NHKeyContents extends NHKeyForPublication {
 	final short[] secData;
 
 	public NHKeyContents(byte[] pubData, short[] secData) {
-		super(pubData);
+		super(NHKeyMetadata.createMetadata(BlockType.S), pubData);
 		this.secData = secData;
 	}
 	

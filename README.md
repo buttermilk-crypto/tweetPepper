@@ -1,23 +1,23 @@
 # buttermilk tweetPepper
 
 Built on the nucleus of TweetNaCl, TweetPepper provides contemporary key formats,  key protection 
-using SCrypt/SecretBox, digital signature support scheme featuring CubeHash, key encapsulation using 
-Salsa20, and other useful features you probably want anyway in a micro-cryptography kit.
+using SCrypt/SecretBox, digital signature support scheme featuring CubeHash or SHA3, key encapsulation using 
+Salsa20, and other useful features you probably want anyway in a lightweight cryptography micro-library.
 
 This project was originally forked from https://github.com/ianopolous/tweetnacl-java/. Because that fork was 
-GPL'd I cannot include it in buttermilk, which is licensed Apache 2.0 FOSS.
+GPL'd I cannot include it in buttermilk, which is licensed Apache 2.0 FOSS. This is also an opportunity to explore some ways not taken there, it has been useful.
  
-See https://tweetnacl.cr.yp.to/ and https://nacl.cr.yp.to/ and https://tweetnacl.cr.yp.to/tweetnacl-20140917.pdf
- for details about "salt".
+See https://tweetnacl.cr.yp.to/ and https://nacl.cr.yp.to/ and https://tweetnacl.cr.yp.to/tweetnacl-20140917.pdf for details about "salt". 
 
 ## Motivating the small idea
 
 ASN.1 encodings are dead, or should be. There has been only one meaningful challenge to PKIX, that
 is PGP, and high time for some new ideas. But what would a new PKI look like? How would the formats
-be encoded?  
+be encoded? What happens to keystores and how are public keys communicated?
 
 I think of TweetPepper as a "micro-library." It is not trying to be all things to all people. But it
-represents some of the basic ideas I am interested in within the context of DJB's suite of cryptography. 
+represents some of the basic ideas I am interested in within the context of DJB's suite of cryptography and 
+is trying to be modern and possibly inspirational. 
 
 Here's what some boxing and signing keys look like serialized to JSON (think replacement for java key stores, PKCS#12, and PKCS#8):
 
@@ -52,9 +52,7 @@ This protection format is intended to remain local to the secret keeper (i.e., i
 password-protected encryption block using SecretBox and SCrypt for the KDF. Keys are generated in pairs for boxing (encryption)
 and signing purposes. 
 
-Here's what a message intended for publication might look like. This is for, e.g., a web service call. It contains a verifiable
-signature over the contents which includes public keys, an info affirmation, and a contact info section. It contains the
-public portion of the above keys. Think replacement for X-509.
+Here's what a message intended for publication might look like. This is for, e.g., a web service call. It contains a verifiable signature over the contents which includes public keys, an info affirmation, and a contact info section. It contains the public portion of the above keys. Think replacement for X-509.
 
 	{
 	  "Version": "Buttermilk Tweet Pepper 1.0",
@@ -128,9 +126,9 @@ public portion of the above keys. Think replacement for X-509.
 
 ## API Quickstart
 
-The TweetSalt core class. This has been reworked form the fork to be more usable: thread-safe, object-oriented, and also 
-formatted for my Java programmer eyes. A lot of people might be interested just in this class, so here is the
-[direct link](https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/salt/TweetNaCl.java)
+The TweetSalt core class has been massaged. This has been reworked from the fork to be more usable: thread-safe, 
+object-oriented, and also formatted for my Java programmer eyes. A lot of people might be interested 
+just in this class, so here is the [direct link (https://github.com/buttermilk-crypto/tweetnacl-java/blob/master/src/main/java/com/cryptoregistry/tweet/salt/TweetNaCl.java)
 
 The methods are still named as in the project we forked from.
 
@@ -164,9 +162,9 @@ Example output is two blocks of type "X" as seen above on this page.
 
 ## Key Classes
 
-The implementation contains a nice class hierarchy for keys to give structure to the raw DJB keys. The chief benefit is strong typing to represent the keys which otherwise would be merely byte arrays, as well as a place to hang meta-data. 
+The implementation contains a nice class hierarchy for keys to give structure to the raw DJB keys. The chief benefit is strong typing to represent the keys which otherwise would be merely byte arrays, as well as a place to hang metadata. 
 
-All keys contain at least some meta-data, which currently is the date and time of key generation, the block type, and the key usage (boxing, signing, or secretbox).
+All keys contain at least some metadata, which currently is the date and time of key generation, the block type, and the key usage (boxing, signing, or secretbox).
  
 Have a browse of the [keys package] (https://github.com/buttermilk-crypto/tweetnacl-java/tree/master/src/main/java/com/cryptoregistry/tweet/pepper/key).
 
@@ -491,14 +489,16 @@ The full example is in the [test/resources folder](https://github.com/buttermilk
 
 ## PNG format image wrappers and keystores
 
+This is an experimental foray into keystore formats using an image as a wrapper.
+
 PNG has the interesting capability of being extended with new chunk types. We can embed a compressed
-KMU file in a PNG:
+KMU file into a PNG and also digitally sign the image and contents.
 
 ![png](https://github.com/buttermilk-crypto/tweetPepper/blob/master/src/test/resources/wrapper.png)
 
 The code to create this file is in PNGTest.java.
 
-
+TBC
 
 
 

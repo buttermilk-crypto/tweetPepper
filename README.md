@@ -489,7 +489,50 @@ for clarity):
 The full example is in the [test/resources folder](https://github.com/buttermilk-crypto/tweetPepper/tree/master/src/test/resources).
 
 
-TODO NewHope Example here.
+New Hope is a bit more complex to use as it does not have a typical key exchange pattern:
+
+	// step 1 - Alice generates a key pair
+		TweetPepper tpA = new TweetPepper();
+		NHKeyContents contentsAlice = tpA.generatePQCKeys();
+		NHKeyForPublication pubAlice = contentsAlice.getPublicKey();
+		
+		// step 2, save alice's keys into a protected format
+		Block contentsBlock = contentsAlice.toBlock();
+		KMU kmu = new KMU(contentsBlock);
+		char [] pass = {'p','a','s','s'};
+		kmu.protectKeyBlocks(pass);
+		StringWriter out = new StringWriter();
+		KMUOutputAdapter outAdapter = new KMUOutputAdapter(kmu);
+		outAdapter.emitKeys(out);
+		System.err.println(out.toString()); // save the out to file
+		
+		// step 3, alice send pub key to bob
+		Block pubBlock = pubAlice.toBlock();
+		kmu = new KMU("AliceMac", "alice@cryptoregistry.com");
+		kmu.addBlock(pubBlock);
+		outAdapter = new KMUOutputAdapter(kmu);
+		out = new StringWriter();
+		outAdapter.writeTo(out);
+		System.err.println(out.toString()); // save the out to file and send to Bob
+		
+		// step 4, Bob prepares an exchange pair for exchange with Alice based on her pub key
+		StringReader reader = new StringReader(out.toString());
+		KMUInputAdapter in = new KMUInputAdapter(reader);
+		KMU alicePubKMU = in.read();
+		TweetPepper tpB = new TweetPepper();
+		ExchangePair bobExchangePair = tpB.generateExchange(alicePubKMU.getNewHopePubKey());
+		
+		// step 5 this produces the shared secret for Bob and an exchange key to send to Alice:
+		byte [] bobSharedSecret = bobExchangePair.getSharedValue();
+		NHKeyForExchange bobKeyForExchange = bobExchangePair.getPublicKey();
+		
+		// step 6, bob send key for exchange to alice
+		
+		// step 7, Alice calculates her shared secret using her private key contents and Bob's exchange key
+		byte [] aliceSharedSecret = tpA.calculateAgreement(contentsAlice, bobKeyForExchange);
+		
+		Assert.assertTrue(Arrays.equals(aliceSharedSecret, bobSharedSecret));
+		
 
 ## PNG format image wrappers and embedded keystores
 

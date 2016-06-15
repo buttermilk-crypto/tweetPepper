@@ -19,6 +19,7 @@ along with TweetPepper.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.cryptoregistry.tweet;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
 
@@ -70,7 +71,7 @@ public class PQCTest {
 		NHKeyContents contentsAlice = tpA.generatePQCKeys();
 		NHKeyForPublication pubAlice = contentsAlice.getPublicKey();
 		
-		// step 2, save alice's keys
+		// step 2, save alice's keys into a protected format
 		Block contentsBlock = contentsAlice.toBlock();
 		KMU kmu = new KMU(contentsBlock);
 		char [] pass = {'p','a','s','s'};
@@ -82,16 +83,19 @@ public class PQCTest {
 		
 		// step 3, alice send pub key to bob
 		Block pubBlock = pubAlice.toBlock();
-		kmu = new KMU("Chinese_Knees", "dave@cryptoregistry.com");
+		kmu = new KMU("AliceMac", "alice@cryptoregistry.com");
 		kmu.addBlock(pubBlock);
 		outAdapter = new KMUOutputAdapter(kmu);
 		out = new StringWriter();
 		outAdapter.writeTo(out);
-		System.err.println(out.toString()); // save the out to file
+		System.err.println(out.toString()); // save the out to file and send to Bob
 		
 		// step 4, Bob prepares an exchange pair for exchange with Alice based on her pub key
+		StringReader reader = new StringReader(out.toString());
+		KMUInputAdapter in = new KMUInputAdapter(reader);
+		KMU alicePubKMU = in.read();
 		TweetPepper tpB = new TweetPepper();
-		ExchangePair bobExchangePair = tpB.generateExchange(pubAlice);
+		ExchangePair bobExchangePair = tpB.generateExchange(alicePubKMU.getNewHopePubKey());
 		
 		// step 5 this produces the shared secret for Bob and an exchange key to send to Alice:
 		byte [] bobSharedSecret = bobExchangePair.getSharedValue();
@@ -101,6 +105,8 @@ public class PQCTest {
 		
 		// step 7, Alice calculates her shared secret using her private key contents and Bob's exchange key
 		byte [] aliceSharedSecret = tpA.calculateAgreement(contentsAlice, bobKeyForExchange);
+		
+		Assert.assertTrue(Arrays.equals(aliceSharedSecret, bobSharedSecret));
 		
 	}
 

@@ -33,6 +33,7 @@ import com.cryptoregistry.tweet.pbe.PBEParams;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyContents;
 import com.cryptoregistry.tweet.pepper.key.BoxingKeyForPublication;
 import com.cryptoregistry.tweet.pepper.key.SigningKeyContents;
+import com.cryptoregistry.tweet.salt.pqc.NHKeyForPublication;
 import com.cryptoregistry.tweet.url.BijectiveEncoder;
 
 /**
@@ -232,6 +233,20 @@ public class KMU {
 				if(b.containsKey("KeyUsage")&&b.get("KeyUsage").equals("Boxing")) {
 					// found a signing key
 					return new BoxingKeyForPublication(b);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public NHKeyForPublication getNewHopePubKey(){
+		for(String s: map.keySet()){
+			Block b = map.get(s);
+			if(b.name.endsWith("-P")){
+				if(b.containsKey("KeyUsage")&&b.get("KeyUsage").equals("Agreement")) {
+					// found an agreement key
+					return new NHKeyForPublication(b);
 				}
 			}
 		}
